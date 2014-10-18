@@ -73,9 +73,9 @@ import Scalaz._
         </section>
 
         <section>
-	  <h2>Out of the box</h2>
-	  Using the "enrich my library" approach, many types have extra methods available:
-	  <p class="fragment"><code>.option</code> on <code>Boolean</code> types:
+	  <h2>Enhancements out of the box</h2>
+	  <h3>Booleans</h3>
+	  <p class="fragment"><code>.option</code></p>
 	  <pre class="fragment"><code data-trim class="scala">
 scala> val boolT = 6 < 10
 boolT: Boolean = true
@@ -98,8 +98,9 @@ res2: Option[String] = Some(value if true)
 
 
         <section>
-	  <h2>Out of the box</h2>
-	  <p class="fragment"<code>.parseXXX</code> on <code>String</code> types:
+	  <h2>Enhancements out of the box</h2>
+	  <h3>Strings</h3>
+	  <p class="fragment"<code>.parseXXX</code></p>
 	  <pre class="fragment"><code data-trim class="scala">
 scala> "6".parseInt
 res3: scalaz.Validation[NumberFormatException,Int] = Success(6)
@@ -110,21 +111,234 @@ res4: scalaz.Validation[IllegalArgumentException,Boolean] =
           </code></pre>
         </section>
 
+        <section>
+	  <h2>Enhancements out of the box</h2>
+	  <h3>Lists</h3>
+          <p class="fragment"><code>.allPairs</code></p>
+          <pre class="fragment"><code data-trim class="scala">
+scala> List(1, 2, 3, 4).allPairs
+res6: List[(Int, Int)] = List((1,2), (2,3), (3,4), (1,3), (2,4), (1,4))
+          </code></pre>
+          <p class="fragment"><code>.powerset</code></p>
+          <pre class="fragment"><code data-trim class="scala">
+scala> List('a, 'b, 'c).powerset
+res3: List[List[Symbol]] = List(List('a, 'b, 'c), List('a, 'b), List('a, 'c), List('a), List('b, 'c), List('b), List('c), List())
+          </code></pre>
+        </section>
+
+        <section>
+	  <h2>Enhancements out of the box</h2>
+	  <h3>All types</h3>
+          <p class="fragment"><code>.some</code></p>
+          <pre class="fragment"><code data-trim class="scala">
+scala> val corrie = "corrie".some
+corrie: Option[String] = Some(corrie)
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+scala> case class Money(currency: String, amount: Int)
+defined class Money
+
+scala> Money("EUR", 3).some
+res3: Option[Money] = Some(Money(EUR, 3))
+          </code></pre>
+        </section>
+
+        <section>
+	  <h2>Enhancements out of the box</h2>
+          <p>There are plenty more.</p>
+          <img src="screenshot.png">
+        </section>
+
+        <section>
+	  <h2>Typeclasses</h2>
+	  <h3 class="fragment">A simple example</h3>
+        </section>
 
 
-
-
-
-
-
-
+        <section>
+	  <h2>Typeclasses</h2>
+	  <h3>A simple example</h3>
+          <p>A trait for defining order:</p>
+          <pre><code data-trim contenteditable style="font-size: 18px; margin-top: 20px;">
+trait Ord[T] {
+  def compare(a: T, b: T): Boolean
+}
+        </code></pre>
+          <p class="fragment">An <code>Ord</code> instance <i class="fragment">for a specific type:</i></p>
+          <pre class="fragment"><code data-trim class="scala">
+object intOrd extends Ord[Int] {
+  def compare(a: Int, b: Int): Boolean = a <= b
+}
+        </code></pre>
+          <p class="fragment">This instance can be used when necessary:</p>
+          <pre class="fragment"><code data-trim class="scala">
+def sort[T](xs: List[T])(ord: Ord[T]): List[T] = ...
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+scala> sort(List(3, 2, 1))(intOrd)
+res5: List[Int] = List(1, 2, 3)
+          </code></pre>
+        </section>
 
 
 
         <section>
+	  <h2>Typeclasses</h2>
+	  <h3>A simple example</h3>
+          <pre class="fragment"><code data-trim class="scala">
+implicit object intOrd extends Ord[Int] ... // as before
+
+def sort[T](xs: List[T])(implicit ord: Ord[T]): List[T] = ... // as before
+          </code></pre>
+<!-- TODO Lets make this something other than numbers like the non compile below (but obviously a different type)-->
+          <pre class="fragment"><code data-trim class="scala">
+scala> sort[Int](List(4, 3, 6, 1, 7))
+res4: List(1, 3, 4, 6, 7)
+          </code></pre>
+          <p class="fragment">No implicit in scope:</p>
+          <pre class="fragment"><code data-trim class="scala">
+scala> sort[String](List("z", "y", "x", "w")
+&lt;console&gt;:28: error: could not find implicit value for parameter ord: Ord[String]
+          </code></pre>
+          <p class="fragment"><small><i>(This example lifted from Martin Odersky's paper: <a href="http://ropas.snu.ac.kr/~bruno/papers/TypeClasses.pdf">Type Classes as Objects and Implicits</a>)</i></small></p>
+        </section>
+
+
+        <section>
+          <h2>Typeclasses</h2>
+          <pre><code data-trim class="scala">
+public interface Comparator&lt;T&gt; {
+    int compare(T o1, T o2);
+}
+          </code></pre>
+	  <p class="fragment"><code>Collections.sort</code>:</p>
+          <pre class="fragment"><code data-trim class="scala">
+public static &lt;T&gt; void sort(List&lt;T&gt; list, Comparator&lt;? super T&gt; c)
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Typeclasses</h2>
+          <p>Within Scalaz:</p>
+          <ul>
+            <li class="fragment"><code>Order</code></li>
+            <li class="fragment"><code>Equal</code></li>
+            <li class="fragment"><code>Functor</code></li>
+            <li class="fragment"><code>Monoid</code></li>
+            <li class="fragment"><code>Monad</code></li>
+            <li class="fragment"><code>...</code></li>
+          </ul>
+        </section>
+
+
+        <section>
+          <h2>Typeclasses</h2>
+          <h5 class="fragment">Equal</h5>
+          <pre class="fragment"><code data-trim class="scala">
+scala> "hello" === "world"
+res3: Boolean = false
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+scala> Some("corrie") === "corrie"
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+&lt;console&gt;:14: error:
+ could not find implicit value for parameter F0: scalaz.Equal[java.io.Serializable]
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Typeclasses</h2>
+          <h5 class="fragment">Functor</h5>
+          <p class="fragment">A <code>Functor</code> is something that can be <i>mapped</i>:</p>
+          <pre class="fragment"><code data-trim class="scala">
+def addInt[F[_]](i: Int, toAdd: F[Int])(implicit mapper: Functor[F]): F[Int] = {
+  mapper.map(toAdd)(_ + i)
+}
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+scala> addInt(5, List(10))
+res0: List[Int] = List(15)
+
+scala> addInt(6, 10.some)
+res1: Option[Int] = Some(16)
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+scala> addSix(2, List(10, 11, 12, 13))
+res2: List[Int] = List(12, 13, 14, 15)
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Typeclasses</h2>
+          <h5 class="fragment">Monoid</h5>
+          <pre class="fragment"><code data-trim class="scala">
+trait Semigroup[F] {
+  def append(f1: F, f2: => F): F
+
+  def |+|(f1: F, f2: => F): F = append(f1, f2)
+}
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+trait Monoid[F] extends Semigroup[F] {
+  def zero: F
+}
+          </code></pre>
+          <p class="fragment">A <code>Monoid</code> is a structure with an <i>associative binary operation</i> and an <i>identity element</i></p>
+        </section>
+
+        <section>
+          <h2>Typeclasses</h2>
+          <h5>Monoid</h5>
+          <p class="fragment">Associative:</p>
+          <pre class="fragment"><code data-trim class="scala">
+a + (b + c)
+          </code></pre>
+          <p class="fragment">is equal to:</p>
+          <pre class="fragment"><code data-trim class="scala">
+(a + b) + c
+          </code></pre>
+          <ul>
+            <li class="fragment">Addition</li>
+            <li class="fragment">Multiplication</li>
+            <li class="fragment">String concatentation</li>
+          </ul>
+
+        </section>
+
+        <section>
+          <h2>Typeclasses</h2>
+          <h5>Monoid</h5>
+          <p class="fragment">Identity:</p>
+          <p class="fragment">Addition: <code class="fragment">zero</code></p>
+          <pre class="fragment"><code data-trim class="scala">
+6 + 0 === 6
+          </code></pre>
+          <p class="fragment">Multiplication: <code class="fragment">one</code></p>
+          <pre class="fragment"><code data-trim class="scala">
+6 * 1 === 6
+          </code></pre>
+          <p class="fragment">String concatenation: <i class="fragment">empty string</i></p>
+          <pre class="fragment"><code data-trim class="scala">
+"corrie".concat("") === "corrie"
+          </code></pre>
+	  <p class="fragment">The identity operation for <code>Integer.min</code>?</p>
+          <pre class="fragment"><code data-trim class="scala">
+Integer.min(a, Integer.MAX_VALUE) === a
+          </code></pre>
+        </section>
+
+	<section>
+          <h2>Typeclasses</h2>
+          <h5>Monoid</h5>
+	  Exercises here?
+	</section>
+
+<!--
+        <section>
           <h2>Heads Up</h2>
           <p>
-            reveal.js is a framework for easily creating beautiful presentations using HTML. You'll need a browser with
+            reveal.js is a for easily creating beautiful presentations using HTML. You'll need a browser with
             support for CSS 3D transforms to see it in its full glory.
           </p>
 
@@ -133,7 +347,6 @@ res4: scalaz.Validation[IllegalArgumentException,Boolean] =
           </aside>
         </section>
 
-        <!-- Example of nested vertical slides -->
         <section>
           <section>
             <h2>Vertical Slides</h2>
@@ -423,7 +636,7 @@ function linkify( selector ) {
           <h1>THE END</h1>
           <h3>BY Hakim El Hattab / hakim.se</h3>
         </section>
-
+-->
       </div>
 
     </div>
@@ -436,10 +649,11 @@ function linkify( selector ) {
       // Full list of configuration options available here:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
-        controls: true,
+        controls: false,
         progress: true,
         history: true,
         center: true,
+	slideNumber: true,
 
         theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
         transition: 'linear',
