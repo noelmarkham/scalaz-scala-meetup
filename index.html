@@ -51,14 +51,22 @@
         </section>
 
         <section>
-	  <h3>Hello :-)</h3>
+	  <h2>Hello :-)</h2>
           <img class="fragment" src="itv.svg">
 	  <br/>
           <img class="fragment" src="book.jpg">
         </section>
 
         <section>
-	  Contents here
+	  <ul>
+	    <li class="fragment">Enhancements out of the box</li>
+	    <li class="fragment">Provided types? <i>Not done yet</i></li>
+	    <li class="fragment">Typeclass definition</li>
+	    <li class="fragment">Various Scalaz typeclasses</li>
+	    <li class="fragment">Monads</li>
+	    <li class="fragment">Reader monad <i>Not done yet</i></li>
+	    <li class="fragment">Monad abstraction</li>
+	  </ul>
         </section>
 
 	<section>
@@ -187,8 +195,6 @@ res5: List[Int] = List(1, 2, 3)
           </code></pre>
         </section>
 
-
-
         <section>
 	  <h2>Typeclasses</h2>
 	  <h3>A simple example</h3>
@@ -308,6 +314,27 @@ res1: Option[Int] = Some(16)
 scala> addSix(2, List(10, 11, 12, 13))
 res2: List[Int] = List(12, 13, 14, 15)
           </code></pre>
+        </section>
+
+
+        <section>
+          <h2>Typeclasses</h2>
+          <h5 class="fragment">Applicative Functor</h5>
+	  <!-- Is this applicative or applicative functor -->
+	  <p class="fragment">Scenario:</p>
+          <pre class="fragment"><code data-trim class="scala">
+def f: (A, B, C) => D = ...
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+val oa: Option[A] = ...
+val ob: Option[B] = ...
+val oc: Option[C] = ...
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+val od: Option[D] = (oa |@| ob |@| oc)(f)
+          </code></pre>
+	  <p class="fragment">Think of this as <code>map</code> for an arbitrary number of arguments</p>
+	  <p class="fragment">Of course, any <code>Applicative</code>, not just <code>Option</code></p>
         </section>
 
         <section>
@@ -475,7 +502,7 @@ def divide(numerator: Int, denominator: Int): Option[Int]
           <p class="fragment"><code>Future</code></p>
           <p class="fragment">Make an HTTP call</p>
           <pre class="fragment"><code data-trim class="scala">
-def postRequest(url: String): Future[HttpResponse]
+def postRequest(url: String, data: String): Future[HttpResponse]
           </code></pre>
           <p class="fragment">Store a value in a database</p>
           <pre class="fragment"><code data-trim class="scala">
@@ -491,7 +518,7 @@ def get(key: A): Option[B]
 def divide(numerator: Int, denominator: Int): Option[Int]
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
-def getRequest(url: String): Future[HttpResponse]
+def postRequest(url: String, data: String): Future[HttpResponse]
 def persist(userDetails: User): Future[Unit]
           </code></pre>
           <p class="fragment">The functions all return <code>Something[Type]</code></p>
@@ -530,11 +557,7 @@ trait Monad[M[_]] { self =>
           <p class="fragment"><i>and a function <code>A => M[B]</code>,</i></p>
           <p class="fragment"><i>then I can use this to get <code>M[B]</code></i></p>
         </section>
-<!--
-        <section>
-	  Do I want a point/bind recap here?
-        </section>
--->
+
         <section>
           <h2>“Chaining” calls</h2>
           <p class="fragment">Given:</p>
@@ -556,7 +579,6 @@ getUserId(username) >>= getUser >>= getAddress
 
         <section>
           <h2>“Chaining” calls</h2>
-          <!--<p class="fragment">As long as <code>map</code> and <code>flatMap</code> are defined on the class, you can use it in a for comprehension:</p>-->
 	  <h5>For comprehensions</h5>
           <pre><code data-trim class="scala">
 def getUserId(username: String): Option[Int]
@@ -584,11 +606,100 @@ for {
           </ul>
         </section>
 
+        <section>
+	  <h2>Typeclasses</h2>
+	  <h5>Reader</h5>
+	  <p>TODO</p>
+        </section>
 
         <section>
 	  <h2>Abstraction over monads</h2>
+	  <p class="fragment">Ficticious scenario:</p>
+          <pre class="fragment"><code data-trim class="scala">
+def getUser(id: Int): Future[User]
+def getAddress(user: User): Future[Address]
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+def addressFromUserId(userId: Int): Future[Address] = {
+  for {
+    user    <- getUser(userId)
+    address <- getAddress(user)
+  } yield address
+}
+          </code></pre>
         </section>
 
+        <section>
+	  <h2>Abstraction over monads</h2>
+	  <p class="fragment">Refactoring:</p>
+          <pre class="fragment"><code data-trim class="scala">
+def addressFromUserId(getUserFunc:    Int => Future[User], 
+                      getAddressFunc: User => Future[Address])
+                     (userId: Int): Future[Address] = {
+  for {
+    user    <- getUserFunc(userId)
+    address <- getAddressFunc(user)
+  } yield address
+}
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+val userTestF: Int => Future[User] = 
+                           i => Future.successful(User(i, "Bob", "Smith"))
+
+val addressTestF: User => Future[Address] = 
+                           _ => Future.successful(Address("Paris"))
+
+val wiringTest = addressFromUserId(userTestF, addressTestF)(1234)
+
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+assert(Await.result(wiringTest...
+          </code></pre>
+        </section>
+
+        <section>
+	  <h2>Abstraction over monads</h2>
+	  <p class="fragment">More Refactoring:</p>
+          <pre class="fragment"><code data-trim class="scala">
+def addressFromUserId[M[_]: Monad](getUserFunc:    Int => M[User], 
+                                   getAddressFunc: User => M[Address])
+                                  (userId: Int): M[Address] = {
+  for {
+    user    <- getUserFunc(userId)
+    address <- getAddressFunc(user)
+  } yield address
+}
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+val userTestF: Int => Id[User] = i => User(i, "Bob", "Smith")
+val addressTestF: User => Id[Address] = _ => Address("Paris")
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+val wiringTest = addressFromUserId[Id](userTestF, addressTestF)(1234)
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+assert(wiringTest...
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+scala> :type wiringTest
+scalaz.Scalaz.Id[Address]
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+scala> val address: Address = wiringTest
+address: Address = Address(Paris)
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Thank you</h2>
+          <h5>Useful links</h5>
+          <ul>
+            <li>Scalaz for the rest of us</li>
+            <li>Learn you a Haskell book</li>
+            <li>YouTube: Scalaz for the rest of us</li>
+            <li>Twitter: Scalaz Per Diem</li>
+	  </ul>
+        </section>
 <!--
         <section>
           <h2>Heads Up</h2>
