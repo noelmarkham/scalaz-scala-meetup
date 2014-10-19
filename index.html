@@ -51,8 +51,10 @@
         </section>
 
         <section>
-	  <h3>Hello :)</h3>
-	  About me section here
+	  <h3>Hello :-)</h3>
+          <img class="fragment" src="itv.svg">
+	  <br/>
+          <img class="fragment" src="book.jpg">
         </section>
 
         <section>
@@ -68,8 +70,6 @@ libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.1.0"
 import scalaz._
 import Scalaz._
           </code></pre>
-<!-- TODO SAY SOMETHING ABOUT THE IMPORTS AND THE DIFFERENT WAYS TO IMPORT HERE -->
-          <p class="fragment">That's it.</p>
         </section>
 
         <section>
@@ -121,8 +121,15 @@ res6: List[(Int, Int)] = List((1,2), (2,3), (3,4), (1,3), (2,4), (1,4))
           </code></pre>
           <p class="fragment"><code>.powerset</code></p>
           <pre class="fragment"><code data-trim class="scala">
-scala> List('a, 'b, 'c).powerset
-res3: List[List[Symbol]] = List(List('a, 'b, 'c), List('a, 'b), List('a, 'c), List('a), List('b, 'c), List('b), List('c), List())
+scala> List('a', 'b', 'c').powerset.foreach(println)
+List(a, b, c)
+List(a, b)
+List(a, c)
+List(a)
+List(b, c)
+List(b)
+List(c)
+List()
           </code></pre>
         </section>
 
@@ -146,7 +153,7 @@ res3: Option[Money] = Some(Money(EUR, 3))
         <section>
 	  <h2>Enhancements out of the box</h2>
           <p>There are plenty more.</p>
-          <img src="screenshot.png">
+          <img class="bkg" src="screenshot.png">
         </section>
 
         <section>
@@ -187,7 +194,8 @@ res5: List[Int] = List(1, 2, 3)
 	  <h3>A simple example</h3>
           <pre class="fragment"><code data-trim class="scala">
 implicit object intOrd extends Ord[Int] ... // as before
-
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
 def sort[T](xs: List[T])(implicit ord: Ord[T]): List[T] = ... // as before
           </code></pre>
 <!-- TODO Lets make this something other than numbers like the non compile below (but obviously a different type)-->
@@ -198,7 +206,8 @@ res4: List(1, 3, 4, 6, 7)
           <p class="fragment">No implicit in scope:</p>
           <pre class="fragment"><code data-trim class="scala">
 scala> sort[String](List("z", "y", "x", "w")
-&lt;console&gt;:28: error: could not find implicit value for parameter ord: Ord[String]
+&lt;console&gt;:28: error: 
+            could not find implicit value for parameter ord: Ord[String]
           </code></pre>
           <p class="fragment"><small><i>(This example lifted from Martin Odersky's paper: <a href="http://ropas.snu.ac.kr/~bruno/papers/TypeClasses.pdf">Type Classes as Objects and Implicits</a>)</i></small></p>
         </section>
@@ -206,13 +215,14 @@ scala> sort[String](List("z", "y", "x", "w")
 
         <section>
           <h2>Typeclasses</h2>
-          <pre><code data-trim class="scala">
+	  <h5>Daunted? Confused?</h5>
+          <pre class="fragment"><code data-trim class="java">
 public interface Comparator&lt;T&gt; {
     int compare(T o1, T o2);
 }
           </code></pre>
 	  <p class="fragment"><code>Collections.sort</code>:</p>
-          <pre class="fragment"><code data-trim class="scala">
+          <pre class="fragment"><code data-trim class="java">
 public static &lt;T&gt; void sort(List&lt;T&gt; list, Comparator&lt;? super T&gt; c)
           </code></pre>
         </section>
@@ -230,20 +240,51 @@ public static &lt;T&gt; void sort(List&lt;T&gt; list, Comparator&lt;? super T&gt
           </ul>
         </section>
 
-
         <section>
           <h2>Typeclasses</h2>
           <h5 class="fragment">Equal</h5>
           <pre class="fragment"><code data-trim class="scala">
-scala> "hello" === "world"
-res3: Boolean = false
+scala> "Hello" === "olleH".reverse
+res13: Boolean = true
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
-scala> Some("corrie") === "corrie"
+scala> "six" === 6
+          </code></pre>
+         <pre class="fragment"><code data-trim class="no-highlight">
+&lt;console&gt;:20: error: type mismatch;
+ found   : Int(6)
+ required: String
+              "six" === 6
+                        ^
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Typeclasses</h2>
+          <h5>Equal</h5>
+          <pre class="fragment"><code data-trim class="scala">
+class Money(val ccy: String, val amount: Int)
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
-&lt;console&gt;:14: error:
- could not find implicit value for parameter F0: scalaz.Equal[java.io.Serializable]
+implicit val equalMoney: Equal[Money] = new Equal[Money] {
+  override def equal(m1: Money, m2: Money): Boolean = {
+    m1.ccy === m2.ccy && m2.amount === m2.amount
+  }
+}
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+new Money("GBP", 3) === new Money("EUR", 3)
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Typeclasses</h2>
+          <h5>Equal</h5>
+          <pre class="fragment"><code data-trim class="scala">
+case class Money(ccy: String, amount: Int)
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+implicit val equalMoney: Equal[Money] = Equal.equalA[Money]
           </code></pre>
         </section>
 
@@ -252,8 +293,8 @@ scala> Some("corrie") === "corrie"
           <h5 class="fragment">Functor</h5>
           <p class="fragment">A <code>Functor</code> is something that can be <i>mapped</i>:</p>
           <pre class="fragment"><code data-trim class="scala">
-def addInt[F[_]](i: Int, toAdd: F[Int])(implicit mapper: Functor[F]): F[Int] = {
-  mapper.map(toAdd)(_ + i)
+def addInt[F[_]](i: Int, toAdd: F[Int])(implicit f: Functor[F]): F[Int] = {
+  f.map(toAdd)(_ + i)
 }
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
@@ -290,7 +331,7 @@ trait Monoid[F] extends Semigroup[F] {
         <section>
           <h2>Typeclasses</h2>
           <h5>Monoid</h5>
-          <p class="fragment">Associative:</p>
+          <h6 class="fragment">Associative</h6>
           <pre class="fragment"><code data-trim class="scala">
 a + (b + c)
           </code></pre>
@@ -309,7 +350,7 @@ a + (b + c)
         <section>
           <h2>Typeclasses</h2>
           <h5>Monoid</h5>
-          <p class="fragment">Identity:</p>
+          <h6 class="fragment">Identity</h6>
           <p class="fragment">Addition: <code class="fragment">zero</code></p>
           <pre class="fragment"><code data-trim class="scala">
 6 + 0 === 6
@@ -328,11 +369,225 @@ Integer.min(a, Integer.MAX_VALUE) === a
           </code></pre>
         </section>
 
-	<section>
+        <section>
           <h2>Typeclasses</h2>
+          <h5 class="fragment">Monoid</h5>
+	  <p class="fragment"><code>foldMap</code></p>
+          <pre class="fragment"><code data-trim class="scala">
+scala> List(10, 9, 8).foldMap(i => i)
+res20: Int = 27
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+scala> List("alpha", "beta", "gamma").foldMap(s => List(s.length))
+res22: List[Int] = List(5, 4, 5)
+          </code></pre>
+        </section>
+
+        <section>
+	  <h2>Typeclasses</h2>
+          <h5 class="fragment">Monoid</h5>
+	  <p class="fragment">Using append</p>
+          <pre class="fragment"><code data-trim class="scala">
+scala> 1 |+| 2 |+| 3
+res23: Int = 6
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+scala> 1.some |+| 2.some |+| None |+| 3.some
+res24: Option[Int] = Some(6)
+          </code></pre>
+        </section>
+
+        <section>
+	  <h2>Typeclasses</h2>
           <h5>Monoid</h5>
-	  Exercises here?
+	  <p>Using append</p>
+          <pre class="fragment"><code data-trim class="scala">
+scala> val m1 = Map(1 -> List("a", "b"), 2 -> List("aa", "bb"))
+
+scala> val m2 = Map(1 -> List("z"), 3 -> List("yyy", "zzz"))
+
+scala> m1 |+| m2
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+res25: Map(1 -> List(a, b, z), 3 -> List(yyy, zzz), 2 -> List(aa, bb))
+          </code></pre>
+        </section>
+
+        <section>
+	  <h2>Typeclasses</h2>
+          <h5>Monoid</h5>
+	  <p>Using append</p>
+          <pre class="fragment"><code data-trim class="scala">
+scala> val m1 = Map("a" -> 1, "b" -> 1)
+
+scala> val m2 = Map("a" -> 1, "c" -> 1)
+
+scala> m1 |+| m2
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+res30: Map(a -> 2, c -> 1, b -> 1)
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+scala> List("a", "b", "b", "b", "c", "c").foldMap(c => Map(c -> 1))
+res32 = Map(b -> 3, a -> 1, c -> 2)
+          </code></pre>
+        </section>
+
+	<section>
+	  <h1>Monads</h1>
 	</section>
+
+        <section>
+          <h2>Typeclasses</h2>
+          <h5>Monad</h5>
+          <p class="fragment">My experience with monads:</p>
+          <ul>
+            <li class="fragment">There are plenty of silly analogies on the Internet.</li>
+            <li class="fragment">The name of <code>for</code> comprehensions is confusing.</li>
+            <li class="fragment">The <code>List</code> monad is quite a confusing place to start.</li>
+            <li class="fragment">If you can define your API to be functions <code>A => M[B]</code>, most other things slot into place easily.</li>
+            <li class="fragment">Abstraction over monad types is the killer feature.</li>
+          </ul>
+        </section>
+
+        <section>
+	  <!-- TODO make this nice -->
+	  <p class="fragment">A monad encapsulates a specific pattern that occurs frequently</p>
+        </section>
+
+        <section>
+          <h2>What is a monad?</h2>
+          <h5 class="fragment">Examples</h5>
+          <p class="fragment"><code>Option</code></p>
+          <p class="fragment">Retrieve a value from a map <i class="fragment">(but it might not be there)</i></p>
+          <pre class="fragment"><code data-trim class="scala">
+def get(key: A): Option[B]
+          </code></pre>
+          <p class="fragment">Perform division <i class="fragment">(but you might try to divide by zero)</i></p>
+          <pre class="fragment"><code data-trim class="scala">
+def divide(numerator: Int, denominator: Int): Option[Int]
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>What is a monad?</h2>
+          <h5>Examples</h5>
+          <p class="fragment"><code>Future</code></p>
+          <p class="fragment">Make an HTTP call</p>
+          <pre class="fragment"><code data-trim class="scala">
+def postRequest(url: String): Future[HttpResponse]
+          </code></pre>
+          <p class="fragment">Store a value in a database</p>
+          <pre class="fragment"><code data-trim class="scala">
+def persist(userDetails: User): Future[Unit]
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>What is a monad?</h2>
+          <p class="fragment">There is a pattern here:</p>
+          <pre class="fragment"><code data-trim class="scala">
+def get(key: A): Option[B]
+def divide(numerator: Int, denominator: Int): Option[Int]
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+def getRequest(url: String): Future[HttpResponse]
+def persist(userDetails: User): Future[Unit]
+          </code></pre>
+          <p class="fragment">The functions all return <code>Something[Type]</code></p>
+          <p class="fragment">Is this useful? Can we abstract this?</p>
+        </section>
+
+        <section>
+          <h2>Typeclasses</h2>
+          <h5>Monad</h5>
+          <pre><code data-trim class="scala">
+trait Monad[M[_]] { self =>
+    def point[A](a: => A): M[A]
+
+    def bind[A, B](fa: M[A])(f: (A) => M[B]): M[B]
+
+    def flatMap[B](f: A => M[B]) = bind(self)(f)
+    def >>=[B](f: A => M[B]) = bind(self)(f)
+
+    def map[A, B](fa: M[A])(f: A => B) = bind(fa)(a => point(f(a)))
+}
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Typeclasses</h2>
+          <h5>Monad</h5>
+	  <p class="fragment"><code>def point[A](a: => A): M[A]</code></p>
+	  <p class="fragment"><i>Given an <code>A</code>, this will give me an <code>M[A]</code></i></p>
+        </section>
+
+        <section>
+          <h2>Typeclasses</h2>
+          <h5>Monad</h5>
+	  <p class="fragment"><code>def bind[A,B](fa: M[A])(f: (A) => M[B]): M[B]</code></p>
+          <p class="fragment"><i>If I have an <code>M[A]</code>,</i></p>
+          <p class="fragment"><i>and a function <code>A => M[B]</code>,</i></p>
+          <p class="fragment"><i>then I can use this to get <code>M[B]</code></i></p>
+        </section>
+<!--
+        <section>
+	  Do I want a point/bind recap here?
+        </section>
+-->
+        <section>
+          <h2>“Chaining” calls</h2>
+          <p class="fragment">Given:</p>
+          <pre class="fragment"><code data-trim class="scala">
+def getUserId(username: String): Option[Int]
+def getUser(id: Int): Option[User]
+def getAddress(user: User): Option[Address]
+          </code></pre>
+          <p class="fragment">You can chain these together using <code>flatMap</code>.</p>
+          <pre class="fragment"><code data-trim class="scala">
+def addressFromUsername(username: String): Option[Address] = 
+                 getUserId(username).flatMap(getUser).flatMap(getAddress)
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+getUserId(username) >>= getUser >>= getAddress
+          </code></pre>
+        </section>
+
+
+        <section>
+          <h2>“Chaining” calls</h2>
+          <!--<p class="fragment">As long as <code>map</code> and <code>flatMap</code> are defined on the class, you can use it in a for comprehension:</p>-->
+	  <h5>For comprehensions</h5>
+          <pre><code data-trim class="scala">
+def getUserId(username: String): Option[Int]
+def getUser(id: Int): Option[User]
+def getAddress(user: User): Option[Address]
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+for {
+  userId  <- getUserId(username)
+  user    <- getUser(userId)
+  address <- getAddress(user)
+} yield address
+          </code></pre>
+          <p class="fragment">As long as <code>map</code> and <code>flatMap</code> are defined on the class.</p>
+        </section>
+
+        <section>
+          <h2>Different monads, different behaviour:</h2>
+          <ul>
+            <li class="fragment"><code>Option</code>: The ability to fail fast</li>
+            <li class="fragment"><code>Either</code>: The ability to fail fast, telling us about the failure</li>
+            <li class="fragment"><code>Future</code>: Perform computations concurrently</li>
+            <li class="fragment"><code>Reader</code>: Provide a read-only environment</li>
+            <li class="fragment"><code>Id</code>: Do nothing special <i class="fragment">(What's the point of this??)</i></li>
+          </ul>
+        </section>
+
+
+        <section>
+	  <h2>Abstraction over monads</h2>
+        </section>
 
 <!--
         <section>
