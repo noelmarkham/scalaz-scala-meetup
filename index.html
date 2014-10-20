@@ -44,6 +44,12 @@
       <div class="slides">
 
         <section>
+          <aside class="notes">
+            <ul>
+	      <li>Explain the silly name</li>
+              <li>The point of this talk is to introduce Scalaz to those who are unfamiliar, daunted/afraid of its strange syntax</li>
+            </ul>
+          </aside>
 	  <h1>Scalaz</h1>
 	  <h3 class="fragment">Or: How I learned to stop worrying and love monads</h3>
 	  <p>Scala.io - 24 October 2014</p>
@@ -58,13 +64,14 @@
         </section>
 
         <section>
+	  <h2>Schedule</h2>
 	  <ul>
 	    <li class="fragment">Enhancements out of the box</li>
-	    <li class="fragment">Provided types? <i>Not done yet</i></li>
+<!--	    <li class="fragment">Provided types? <i>Not done yet</i></li> -->
 	    <li class="fragment">Typeclass definition</li>
 	    <li class="fragment">Various Scalaz typeclasses</li>
 	    <li class="fragment">Monads</li>
-	    <li class="fragment">Reader monad <i>Not done yet</i></li>
+<!--	    <li class="fragment">Reader monad <i>Not done yet</i></li> -->
 	    <li class="fragment">Monad abstraction</li>
 	  </ul>
         </section>
@@ -604,16 +611,16 @@ for {
             <li class="fragment"><code>Either</code>: The ability to fail fast, telling us about the failure</li>
             <li class="fragment"><code>Future</code>: Perform computations concurrently</li>
             <li class="fragment"><code>Reader</code>: Provide a read-only environment</li>
-            <li class="fragment"><code>Id</code>: Do nothing special <i class="fragment">(What's the point of this??)</i></li>
+            <li class="fragment"><code>Id</code>: Do nothing special <i class="fragment">(???)</i></li>
           </ul>
         </section>
-
+<!--
         <section>
 	  <h2>Typeclasses</h2>
 	  <h5>Reader</h5>
 	  <p>TODO</p>
         </section>
-
+-->
         <section>
 	  <h2>Abstraction over monads</h2>
 	  <p class="fragment">Ficticious scenario:</p>
