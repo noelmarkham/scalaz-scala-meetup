@@ -46,7 +46,7 @@
         <section>
           <aside class="notes">
             <ul>
-	      <li>Explain the silly name</li>
+	      <li>Explain the silly name of the talk</li>
               <li>The point of this talk is to introduce Scalaz to those who are unfamiliar, daunted/afraid of its strange syntax</li>
             </ul>
           </aside>
@@ -69,8 +69,10 @@
 
         <section>
 	  <aside class="notes">
-	    Last element: Monad abstraction
-	    Next slide: SBT/Imports
+	    <ul>
+	      <li>Last element: Monad abstraction</li>
+	      <li>Next slide: SBT/Imports</li>
+	    </ul>
 	  </aside>
 	  <h2>Schedule</h2>
 	  <ul>
@@ -86,8 +88,9 @@
 
 	<section>
 	  <aside class="notes">
-	    Last element: Monad abstraction
-	    Next slide: SBT/Imports
+	    <ul>
+	      <li>Next slide: Out of the box/booleans</li>
+	    </ul>
 	  </aside>
 <!-- TODO IS THIS THE RIGHT VERSION -->
 	  <pre><code data-trim class="scala">
@@ -100,6 +103,12 @@ import Scalaz._
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+              <li>Last element: Comparing to if statement</li>
+	      <li>Next slide: Strings/Parse primitives</li>
+	    </ul>
+	  </aside>
 	  <h2>Enhancements out of the box</h2>
 	  <h3>Booleans</h3>
 	  <p class="fragment"><code>.option</code></p>
@@ -123,8 +132,12 @@ res2: Option[String] = Some(value if true)
 	  </code></pre>
         </section>
 
-
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Next slide: Lists</li>
+	    </ul>
+	  </aside>
 	  <h2>Enhancements out of the box</h2>
 	  <h3>Strings</h3>
 	  <p class="fragment"<code>.parseXXX</code></p>
@@ -139,6 +152,11 @@ res4: scalaz.Validation[IllegalArgumentException,Boolean] =
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Next slide: All types</li>
+	    </ul>
+	  </aside>
 	  <h2>Enhancements out of the box</h2>
 	  <h3>Lists</h3>
           <p class="fragment"><code>.allPairs</code></p>
@@ -161,6 +179,12 @@ List()
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: Money option</li>
+	      <li>Next slide: There are plenty more screenshot</li>
+	    </ul>
+	  </aside>
 	  <h2>Enhancements out of the box</h2>
 	  <h3>All types</h3>
           <p class="fragment"><code>.some</code></p>
@@ -178,18 +202,34 @@ res3: Option[Money] = Some(Money(EUR, 3))
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Next slide: Typeclass example</li>
+	    </ul>
+	  </aside>
 	  <h2>Enhancements out of the box</h2>
           <p>There are plenty more.</p>
           <img class="bkg" src="screenshot.png">
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Next slide: Typeclass for defining order</li>
+	    </ul>
+	  </aside>
 	  <h2>Typeclasses</h2>
 	  <h3 class="fragment">A simple example</h3>
         </section>
 
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: Sorting with the intOrd typeclass</li>
+	      <li>Next slide: Make the ordering implicit</li>
+	    </ul>
+	  </aside>
 	  <h2>Typeclasses</h2>
 	  <h3>A simple example</h3>
           <p>A trait for defining order:</p>
@@ -215,6 +255,12 @@ res5: List[Int] = List(1, 2, 3)
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: Link to Odersky paper</li>
+	      <li>Next slide: Typeclasses in Java</li>
+	    </ul>
+	  </aside>
 	  <h2>Typeclasses</h2>
 	  <h3>A simple example</h3>
           <pre class="fragment"><code data-trim class="scala">
@@ -239,6 +285,11 @@ scala> sort[String](List("z", "y", "x", "w")
 
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Next slide: Typeclasses provided by Scalaz</li>
+	    </ul>
+	  </aside>
           <h2>Typeclasses</h2>
 	  <h5>Daunted? Confused?</h5>
           <pre class="fragment"><code data-trim class="java">
@@ -253,6 +304,11 @@ public static &lt;T&gt; void sort(List&lt;T&gt; list, Comparator&lt;? super T&gt
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Next slide: Equal typeclass</li>
+	    </ul>
+	  </aside>
           <h2>Typeclasses</h2>
           <p>Within Scalaz:</p>
           <ul>
@@ -266,6 +322,12 @@ public static &lt;T&gt; void sort(List&lt;T&gt; list, Comparator&lt;? super T&gt
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: Compiler error</li>
+	      <li>Next slide: Implement own Equal</li>
+	    </ul>
+	  </aside>
           <h2>Typeclasses</h2>
           <h5 class="fragment">Equal</h5>
           <pre class="fragment"><code data-trim class="scala">
@@ -285,6 +347,12 @@ scala> "six" === 6
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: Using ===</li>
+	      <li>Next slide: equalA/case class/a class with equality defined as you want</li>
+	    </ul>
+	  </aside>
           <h2>Typeclasses</h2>
           <h5>Equal</h5>
           <pre class="fragment"><code data-trim class="scala">
@@ -303,6 +371,11 @@ new Money("GBP", 3) === new Money("EUR", 3)
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Next slide: Functor</li>
+	    </ul>
+	  </aside>
           <h2>Typeclasses</h2>
           <h5>Equal</h5>
           <pre class="fragment"><code data-trim class="scala">
@@ -314,6 +387,12 @@ implicit val equalMoney: Equal[Money] = Equal.equalA[Money]
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: Multi element list</li>
+	      <li>Next slide: Applicative</li>
+	    </ul>
+	  </aside>
           <h2>Typeclasses</h2>
           <h5 class="fragment">Functor</h5>
           <p class="fragment">A <code>Functor</code> is something that can be <i>mapped</i>:</p>
@@ -335,8 +414,13 @@ res2: List[Int] = List(12, 13, 14, 15)
           </code></pre>
         </section>
 
-
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: Not just for option</li>
+	      <li>Next slide: Monoid</li>
+	    </ul>
+	  </aside>
           <h2>Typeclasses</h2>
           <h5 class="fragment">Applicative Functor</h5>
 	  <!-- Is this applicative or applicative functor -->
@@ -357,6 +441,12 @@ val od: Option[D] = (oa |@| ob |@| oc)(f)
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: Monoid definition</li>
+	      <li>Next slide: Associative definiton</li>
+	    </ul>
+	  </aside>
           <h2>Typeclasses</h2>
           <h5 class="fragment">Monoid</h5>
           <pre class="fragment"><code data-trim class="scala">
@@ -375,6 +465,12 @@ trait Monoid[F] extends Semigroup[F] {
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: String concatenation</li>
+	      <li>Next slide: Identity definition</li>
+	    </ul>
+	  </aside>
           <h2>Typeclasses</h2>
           <h5>Monoid</h5>
           <h6 class="fragment">Associative</h6>
@@ -394,6 +490,11 @@ a + (b + c)
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Next slide: Monoid foldMap</li>
+	    </ul>
+	  </aside>
           <h2>Typeclasses</h2>
           <h5>Monoid</h5>
           <h6 class="fragment">Identity</h6>
@@ -416,6 +517,12 @@ Integer.min(a, Integer.MAX_VALUE) === a
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: List alpha beta gamma</li>
+	      <li>Next slide: Using append</li>
+	    </ul>
+	  </aside>
           <h2>Typeclasses</h2>
           <h5 class="fragment">Monoid</h5>
 	  <p class="fragment"><code>foldMap</code></p>
@@ -430,6 +537,14 @@ res22: List[Int] = List(5, 4, 5)
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Say how the option monoid is derived</li>
+	      <li/>
+	      <li>Last element: Append with options</li>
+	      <li>Next slide: Using append with maps</li>
+	    </ul>
+	  </aside>
 	  <h2>Typeclasses</h2>
           <h5 class="fragment">Monoid</h5>
 	  <p class="fragment">Using append</p>
@@ -444,6 +559,12 @@ res24: Option[Int] = Some(6)
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: Flattened map</li>
+	      <li>Next slide: Map append with int keys</li>
+	    </ul>
+	  </aside>
 	  <h2>Typeclasses</h2>
           <h5>Monoid</h5>
 	  <p>Using append</p>
@@ -460,6 +581,11 @@ res25: Map(1 -> List(a, b, z), 3 -> List(yyy, zzz), 2 -> List(aa, bb))
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Next slide: Monads</li>
+	    </ul>
+	  </aside>
 	  <h2>Typeclasses</h2>
           <h5>Monoid</h5>
 	  <p>Using append</p>
@@ -482,10 +608,21 @@ res32: Map(b -> 3, a -> 1, c -> 2)
         </section>
 
 	<section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Next slide: My experience</li>
+	    </ul>
+	  </aside>
 	  <h1>Monads</h1>
 	</section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: Abstraction is killer feature</li>
+	      <li>Next slide: My definition</li>
+	    </ul>
+	  </aside>
           <h2>Typeclasses</h2>
           <h5>Monad</h5>
           <p class="fragment">My experience with monads:</p>
@@ -499,11 +636,22 @@ res32: Map(b -> 3, a -> 1, c -> 2)
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Next slide: Option example</li>
+	    </ul>
+	  </aside>
 	  <!-- TODO make this nice -->
 	  <p class="fragment">A monad encapsulates a specific pattern that occurs frequently</p>
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: divide function</li>
+	      <li>Next slide: Future example</li>
+	    </ul>
+	  </aside>
           <h2>What is a monad?</h2>
           <h5 class="fragment">Examples</h5>
           <p class="fragment"><code>Option</code></p>
@@ -518,6 +666,12 @@ def divide(numerator: Int, denominator: Int): Option[Int]
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: persist function</li>
+	      <li>Next slide: We've spotted a pattern</li>
+	    </ul>
+	  </aside>
           <h2>What is a monad?</h2>
           <h5>Examples</h5>
           <p class="fragment"><code>Future</code></p>
@@ -532,6 +686,12 @@ def persist(userDetails: User): Future[Unit]
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: is this useful?</li>
+	      <li>Next slide: Monad trait implementation</li>
+	    </ul>
+	  </aside>
           <h2>What is a monad?</h2>
           <p class="fragment">There is a pattern here:</p>
           <pre class="fragment"><code data-trim class="scala">
@@ -547,6 +707,11 @@ def persist(userDetails: User): Future[Unit]
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Next slide: Point function</li>
+	    </ul>
+	  </aside>
           <h2>Typeclasses</h2>
           <h5>Monad</h5>
           <pre><code data-trim class="scala">
@@ -564,6 +729,12 @@ trait Monad[M[_]] { self =>
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: Given an...</li>
+	      <li>Next slide: Bind function</li>
+	    </ul>
+	  </aside>
           <h2>Typeclasses</h2>
           <h5>Monad</h5>
 	  <p class="fragment"><code>def point[A](a: => A): M[A]</code></p>
@@ -571,6 +742,13 @@ trait Monad[M[_]] { self =>
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Say how this would chain, "If I had a M[B] and a B => M[C] etc</li>
+	      <li>Last element: then I can use this...</li>
+	      <li>Next slide: Bind function</li>
+	    </ul>
+	  </aside>
           <h2>Typeclasses</h2>
           <h5>Monad</h5>
 	  <p class="fragment"><code>def bind[A,B](fa: M[A])(f: (A) => M[B]): M[B]</code></p>
@@ -580,6 +758,12 @@ trait Monad[M[_]] { self =>
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: >>= </li>
+	      <li>Next slide: For comprehensions</li>
+	    </ul>
+	  </aside>
           <h2>“Chaining” calls</h2>
           <p class="fragment">Given:</p>
           <pre class="fragment"><code data-trim class="scala">
@@ -599,6 +783,12 @@ getUserId(username) >>= getUser >>= getAddress
 
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: As long as map and flatMap are defined</li>
+	      <li>Next slide: Different monads, different behaviour</li>
+	    </ul>
+	  </aside>
           <h2>“Chaining” calls</h2>
 	  <h5>For comprehensions</h5>
           <pre><code data-trim class="scala">
@@ -617,6 +807,12 @@ for {
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: Id monad</li>
+	      <li>Next slide: Abstraction over monads/ficticious scenario</li>
+	    </ul>
+	  </aside>
           <h2>Different monads, different behaviour:</h2>
           <ul>
             <li class="fragment"><code>Option</code>: The ability to fail fast</li>
@@ -634,6 +830,12 @@ for {
         </section>
 -->
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: For comprehension</li>
+	      <li>Next slide: refactoring</li>
+	    </ul>
+	  </aside>
 	  <h2>Abstraction over monads</h2>
 	  <p class="fragment">Ficticious scenario:</p>
           <pre class="fragment"><code data-trim class="scala">
@@ -651,6 +853,12 @@ def addressFromUserId(userId: Int): Future[Address] = {
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: assert await</li>
+	      <li>Next slide: More refactoring</li>
+	    </ul>
+	  </aside>
 	  <h2>Abstraction over monads</h2>
 	  <p class="fragment">Refactoring:</p>
           <pre class="fragment"><code data-trim class="scala">
@@ -679,6 +887,12 @@ assert(Await.result(wiringTest...
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: correct address type</li>
+	      <li>Next slide: Thank you</li>
+	    </ul>
+	  </aside>
 	  <h2>Abstraction over monads</h2>
 	  <p class="fragment">More Refactoring:</p>
           <pre class="fragment"><code data-trim class="scala">
@@ -715,11 +929,12 @@ address: Address = Address(Paris)
           <h2>Thank you</h2>
           <h5>Useful links</h5>
           <ul>
-            <li>Scalaz for the rest of us</li>
-            <li>Learn you a Haskell book</li>
-            <li>YouTube: Scalaz for the rest of us</li>
-            <li>Twitter: Scalaz Per Diem</li>
+            <li><a href="http://eed3si9n.com/learning-scalaz/">Learning Scalaz</a></li>
+            <li><a href="http://learnyouahaskell.com/">Learn you a Haskell book</a></li>
+            <li><a href="http://www.infoq.com/presentations/scalaz-introduction">Video: Scalaz for the rest of us</a></li>
+            <li><a href="https://twitter.com/ScalazPerDiem">Twitter: Scalaz Per Diem</a></li>
 	  </ul>
+	  <br/>
 	  <br/>
 	  <br/>
 	  <p>Noel Markham</p>
