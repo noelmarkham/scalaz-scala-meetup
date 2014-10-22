@@ -145,9 +145,9 @@ res2: Option[String] = Some(value if true)
 scala> "6".parseInt
 res3: scalaz.Validation[NumberFormatException,Int] = Success(6)
 
-scala> "corrie".parseBoolean
+scala> "rosbif".parseBoolean
 res4: scalaz.Validation[IllegalArgumentException,Boolean] =
-      Failure(java.lang.IllegalArgumentException: For input string: "corrie")
+      Failure(java.lang.IllegalArgumentException: For input string: "rosbif")
           </code></pre>
         </section>
 
@@ -189,8 +189,8 @@ List()
 	  <h3>All types</h3>
           <p class="fragment"><code>.some</code></p>
           <pre class="fragment"><code data-trim class="scala">
-scala> val corrie = "corrie".some
-corrie: Option[String] = Some(corrie)
+scala> "rosbif".some
+res3: Option[String] = Some(rosbif)
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
 scala> case class Money(currency: String, amount: Int)
@@ -220,6 +220,7 @@ res3: Option[Money] = Some(Money(EUR, 3))
 	  </aside>
 	  <h2>Typeclasses</h2>
 	  <h3 class="fragment">A simple example</h3>
+          <p class="fragment"><small><i>(This example lifted from Martin Odersky's paper: <a href="http://ropas.snu.ac.kr/~bruno/papers/TypeClasses.pdf">Type Classes as Objects and Implicits</a>)</i></small></p>
         </section>
 
 
@@ -280,9 +281,7 @@ scala> sort[String](List("z", "y", "x", "w")
 &lt;console&gt;:28: error: 
             could not find implicit value for parameter ord: Ord[String]
           </code></pre>
-          <p class="fragment"><small><i>(This example lifted from Martin Odersky's paper: <a href="http://ropas.snu.ac.kr/~bruno/papers/TypeClasses.pdf">Type Classes as Objects and Implicits</a>)</i></small></p>
         </section>
-
 
         <section>
 	  <aside class="notes">
@@ -413,7 +412,7 @@ scala> addSix(2, List(10, 11, 12, 13))
 res2: List[Int] = List(12, 13, 14, 15)
           </code></pre>
         </section>
-
+<!--
         <section>
 	  <aside class="notes">
 	    <ul>
@@ -423,7 +422,7 @@ res2: List[Int] = List(12, 13, 14, 15)
 	  </aside>
           <h2>Typeclasses</h2>
           <h5 class="fragment">Applicative Functor</h5>
-	  <!-- Is this applicative or applicative functor -->
+	  <!XX Is this applicative or applicative functor XX>
 	  <p class="fragment">Scenario:</p>
           <pre class="fragment"><code data-trim class="scala">
 def f: (A, B, C) => D = ...
@@ -439,7 +438,7 @@ val od: Option[D] = (oa |@| ob |@| oc)(f)
 	  <p class="fragment">Think of this as <code>map</code> for an arbitrary number of arguments</p>
 	  <p class="fragment">Of course, any <code>Applicative</code>, not just <code>Option</code></p>
         </section>
-
+-->
         <section>
 	  <aside class="notes">
 	    <ul>
@@ -474,17 +473,21 @@ trait Monoid[F] extends Semigroup[F] {
           <h2>Typeclasses</h2>
           <h5>Monoid</h5>
           <h6 class="fragment">Associative</h6>
-          <pre class="fragment"><code data-trim class="scala">
-a + (b + c)
-          </code></pre>
-          <p class="fragment">is equal to:</p>
-          <pre class="fragment"><code data-trim class="scala">
-(a + b) + c
-          </code></pre>
+	  <div class="fragment"><code>a + (b + c)</code> is equal to <code class="fragment">(a + b) + c</code></div>
+	  <br/>
           <ul>
-            <li class="fragment">Addition</li>
-            <li class="fragment">Multiplication</li>
-            <li class="fragment">String concatentation</li>
+            <li class="fragment">Addition:</li>
+          <pre class="fragment"><code data-trim class="scala">
+5 + (6 + 7) === (5 + 6) + 7
+          </code></pre>
+            <li class="fragment">Multiplication:</li>
+          <pre class="fragment"><code data-trim class="scala">
+10 * (2 * 5) === (10 * 2) * 5
+          </code></pre>
+            <li class="fragment">String concatentation: <code class="fragment">"abc".concat("def.concat("ghi"))</code></li>
+          <pre class="fragment"><code data-trim class="scala">
+"abc".concat("def".concat("ghi")) === ("abc".concat("def")).concat("ghi")
+          </code></pre>
           </ul>
 
         </section>
@@ -938,6 +941,7 @@ address: Address = Address(Paris)
 	  <br/>
 	  <br/>
 	  <p>Noel Markham</p>
+          <a href="http://noelmarkham.github.io/scalaz-scala.io">Slides: http://noelmarkham.github.io/scalaz-scala.io</a>
         </section>
 <!--
         <section>
