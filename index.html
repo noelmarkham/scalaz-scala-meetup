@@ -190,7 +190,19 @@ List()
           <p class="fragment"><code>.some</code></p>
           <pre class="fragment"><code data-trim class="scala">
 scala> "rosbif".some
-res3: Option[String] = Some(rosbif)
+res6: Option[String] = Some(rosbif)
+
+scala> Some("rosbif")
+res7: Some[String] = Some(rosbif)
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+scala> Some(1) |+| Some(2)
+&lt;console&gt;:14: error: value |+| is not a member of Some[Int]
+              Some(1) |+| Some(2)
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+scala> 1.some |+| 2.some
+res12: Option[Int] = Some(3)
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
 scala> case class Money(currency: String, amount: Int)
