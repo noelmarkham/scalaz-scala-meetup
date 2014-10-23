@@ -46,8 +46,7 @@
         <section>
           <aside class="notes">
             <ul>
-	      <li>Explain the silly name of the talk</li>
-              <li>The point of this talk is to introduce Scalaz to those who are unfamiliar, daunted/afraid of its strange syntax</li>
+              <li>The point of this talk is to introduce Scalaz to those who are unfamiliar, daunted/afraid of its strange syntax, hopefully can find use for this in your own projects</li>
             </ul>
           </aside>
 	  <h1>Scalaz</h1>
@@ -58,8 +57,10 @@
 
         <section>
 	  <aside class="notes">
-	    Explain why I am qualified to talk about Scalaz
-	    Next slide: Schedule
+	    <ul>
+	      <li>Explain why I am qualified to talk about Scalaz</li>
+	      <li>Next slide: Schedule</li>
+	    </ul>
 	  </aside>
 	  <h2>Hello :-)</h2>
           <img class="fragment" src="itv.svg">
@@ -70,7 +71,7 @@
         <section>
 	  <aside class="notes">
 	    <ul>
-	      <li>Last element: Monad abstraction</li>
+	      <li>Last element: Monads</li>
 	      <li>Next slide: SBT/Imports</li>
 	    </ul>
 	  </aside>
@@ -90,7 +91,6 @@
 	      <li>Next slide: Out of the box/booleans</li>
 	    </ul>
 	  </aside>
-<!-- TODO IS THIS THE RIGHT VERSION -->
 	  <pre><code data-trim class="scala">
 libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.1.0" 
           </code></pre>
@@ -215,7 +215,7 @@ res3: Option[Money] = Some(Money(EUR, 3))
         <section>
 	  <aside class="notes">
 	    <ul>
-	      <li>Next slide: Typeclass example</li>
+	      <li>Next slide: A better either</li>
 	    </ul>
 	  </aside>
 	  <h2>Enhancements out of the box</h2>
@@ -225,6 +225,10 @@ res3: Option[Money] = Some(Money(EUR, 3))
 
         <section>
 	  <aside class="notes">
+	    <ul>
+	      <li>Last element: ApplicationError or String</li>
+	      <li>Next slide: Right projections</li>
+	    </ul>
 	  </aside>
 	  <h2>A Better Either</h2>
 	  <p class="fragment">Scala: <code>Either[A, B]</code></p>
@@ -239,7 +243,8 @@ res3: Option[Money] = Some(Money(EUR, 3))
 	  <aside class="notes">
 	    <ul>
 	      <li>Works just like an option</li>
-	      <li>Next slide: Typeclass example</li>
+	      <li>Last element: more.map</li>
+	      <li>Next slide: But can't we give it a better name...</li>
 	    </ul>
 	  </aside>
 	  <h2>A Better Either</h2>
@@ -263,9 +268,14 @@ res31: scalaz.\/[Nothing,Int] = \/-(10)
 
         <section>
 	  <aside class="notes">
+	    <ul>
+	      <li>Works just like an option</li>
+	      <li>Last element: Type alias</li>
+	      <li>Next slide: But can't we give it a better name...</li>
+	    </ul>
 	  </aside>
 	  <h2>A Better Either</h2>
-	  <h5 class="fragment">“But can't we give it a better name than that strange symbol?”</h5>
+	  <h5 class="fragment">“Can we give it a plain text name rather than that strange symbol?”</h5>
 	  <p class="fragment">“It's just a mathematical symbol <i class="fragment">like plus.”</i></p>
 	  <p class="fragment">“Use it for a week and we can discuss it after that.”</p>
 	  <br/>
@@ -318,7 +328,7 @@ res5: List[Int] = List(1, 2, 3)
         <section>
 	  <aside class="notes">
 	    <ul>
-	      <li>Last element: Link to Odersky paper</li>
+	      <li>Last element: Compiler error</li>
 	      <li>Next slide: Typeclasses in Java</li>
 	    </ul>
 	  </aside>
@@ -330,7 +340,6 @@ implicit object intOrd extends Ord[Int] ... // as before
           <pre class="fragment"><code data-trim class="scala">
 def sort[T](xs: List[T])(implicit ord: Ord[T]): List[T] = ... // as before
           </code></pre>
-<!-- TODO Lets make this something other than numbers like the non compile below (but obviously a different type)-->
           <pre class="fragment"><code data-trim class="scala">
 scala> sort[Int](List(4, 3, 6, 1, 7))
 res4: List(1, 3, 4, 6, 7)
@@ -446,6 +455,12 @@ implicit val equalMoney: Equal[Money] = Equal.equalA[Money]
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: f.foreach(println)</li>
+	      <li>Next slide: Using a functor</li>
+	    </ul>
+	  </aside>
           <h2>Typeclasses</h2>
           <h5 class="fragment">Functor</h5>
           <pre class="fragment"><code data-trim class="scala">
@@ -468,7 +483,7 @@ false
 	  <aside class="notes">
 	    <ul>
 	      <li>DESCRIBE F[_]!!!!</li>
-	      <li>Last element: Multi element list</li>
+	      <li>Last element: f.foreach(println)</li>
 	      <li>Next slide: Applicative</li>
 	    </ul>
 	  </aside>
@@ -500,8 +515,8 @@ scala> f.foreach(println)
 	  <aside class="notes">
 	    <ul>
 	      <li>We can <i>lift</i> a function</li>
-	      <li>Last element: Not just for option</li>
-	      <li>Next slide: Monoid</li>
+	      <li>Last element: maybeTotal</li>
+	      <li>Next slide: Applicative with None</li>
 	    </ul>
 	  </aside>
           <h2>Typeclasses</h2>
@@ -530,6 +545,7 @@ maybeTotal: Option[Int] = Some(15)
         <section>
 	  <aside class="notes">
 	    <ul>
+	      <li>Last element: Not just option</li>
 	      <li>Next slide: Monoid</li>
 	    </ul>
 	  </aside>
@@ -603,6 +619,7 @@ trait Monoid[F] extends Semigroup[F] {
 	  <aside class="notes">
 	    <ul>
 	      <li>What about a monoid for booleans?</li>
+	      <li>Last element: Integer.min</li>
 	      <li>Next slide: Monoid foldMap</li>
 	    </ul>
 	  </aside>
@@ -695,7 +712,7 @@ res25: Map(1 -> List(a, b, z), 3 -> List(yyy, zzz), 2 -> List(aa, bb))
 	  <aside class="notes">
 	    <ul>
 	      <li>Say that foldMap is not just on List, is on option and others too</li>
-	      <li>Next slide: Monads</li>
+	      <li>Next slide: Monads (everyone's favourite topic)</li>
 	    </ul>
 	  </aside>
 	  <h2>Typeclasses</h2>
@@ -722,7 +739,7 @@ res32: Map(b -> 3, a -> 1, c -> 2)
 	<section>
 	  <aside class="notes">
 	    <ul>
-	      <li>Next slide: My experience</li>
+	      <li>Next slide: My experience with monads</li>
 	    </ul>
 	  </aside>
 	  <h1>Monads</h1>
@@ -752,10 +769,9 @@ res32: Map(b -> 3, a -> 1, c -> 2)
 	  <aside class="notes">
 	    <ul>
 	      <li>A monad encapsulates a specific pattern that occurs so frequently in programming and functional programming generally</li>
-	      <li>Next slide: Option example</li>
+	      <li>Next slide: Examples</li>
 	    </ul>
 	  </aside>
-	  <!-- TODO make this nice -->
 	  <p class="fragment">A monad encapsulates a specific pattern that occurs frequently</p>
         </section>
 
@@ -924,7 +940,7 @@ for {
         <section>
 	  <aside class="notes">
 	    <ul>
-	      <li>Last element: Id monad</li>
+	      <li>Last element: Id monad ???</li>
 	      <li>Next slide: Abstraction over monads/ficticious scenario</li>
 	    </ul>
 	  </aside>
@@ -999,7 +1015,7 @@ assert(Await.result(wiringTest...
 	  <aside class="notes">
 	    <ul>
 	      <li>Last element: correct address type</li>
-	      <li>Next slide: Thank you</li>
+	      <li>Next slide: Abstraction with point only</li>
 	    </ul>
 	  </aside>
 	  <h2>Abstraction over monads</h2>
@@ -1035,6 +1051,12 @@ address: Address = Address(Paris)
         </section>
 
         <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Last element: runLongCalc[Id]</li>
+	      <li>Next slide: Thank you</li>
+	    </ul>
+	  </aside>
 	  <h2>Abstraction over monads</h2>
           <pre class="fragment"><code data-trim class="scala">
 def runLongCalc(a: Int, b: Int): Future[Int] = {
@@ -1051,12 +1073,11 @@ def runLongCalc[M[_]: Monad](a: Int,b: Int)(implicit m: Monad[M]): M[Int] = {
 }
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
-scala> runLongCalc[Id](10, 5)
-res34: scalaz.Scalaz.Id[Int] = ...
-
 scala> runLongCalc[Future](10, 5)
 res35: scala.concurrent.Future[Int] = ...
 
+scala> runLongCalc[Id](10, 5)
+res34: scalaz.Scalaz.Id[Int] = ...
           </code></pre>
         </section>
 
