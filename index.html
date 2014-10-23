@@ -77,12 +77,10 @@
 	  <h2>Schedule</h2>
 	  <ul>
 	    <li class="fragment">Enhancements out of the box</li>
-<!--	    <li class="fragment">Provided types? <i>Not done yet</i></li> -->
+	    <li class="fragment">A better either</li>
 	    <li class="fragment">Typeclass definition</li>
 	    <li class="fragment">Various Scalaz typeclasses</li>
 	    <li class="fragment">Monads</li>
-<!--	    <li class="fragment">Reader monad <i>Not done yet</i></li> -->
-	    <li class="fragment">Monad abstraction</li>
 	  </ul>
         </section>
 
@@ -119,16 +117,16 @@ boolT: Boolean = true
 scala> val boolF = 6 > 10
 boolF: Boolean = false
 
-scala> boolT.option("value if true")
-res0: Option[String] = Some(value if true)
+scala> boolT.option("vrai")
+res0: Option[String] = Some(vrai)
 
-scala> boolF.option("value if true")
+scala> boolF.option("vrai")
 res1: Option[String] = None
 	  </code></pre>
           <p class="fragment">Neater than:
 	  <pre class="fragment"><code data-trim class="scala">
-scala> if(boolT) Some("value if true") else None
-res2: Option[String] = Some(value if true)
+scala> if(boolT) Some("vrai") else None
+res2: Option[String] = Some(vrai)
 	  </code></pre>
         </section>
 
@@ -191,7 +189,8 @@ List()
           <pre class="fragment"><code data-trim class="scala">
 scala> "rosbif".some
 res6: Option[String] = Some(rosbif)
-
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
 scala> Some("rosbif")
 res7: Some[String] = Some(rosbif)
           </code></pre>
@@ -226,12 +225,61 @@ res3: Option[Money] = Some(Money(EUR, 3))
 
         <section>
 	  <aside class="notes">
+	  </aside>
+	  <h2>A Better Either</h2>
+	  <p class="fragment">Scala: <code>Either[A, B]</code></p>
+	  <p class="fragment">Scalaz: <code>\/[A, B]</code></p>
+	  <br/>
+	  <p class="fragment">Infix notation: <code>A \/ B</code></p>
+	  <p class="fragment"><code>Exception \/ HttpResponse</code></p>
+	  <p class="fragment"><code>ApplicationError \/ String</code></p>
+        </section>
+
+        <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Works just like an option</li>
+	      <li>Next slide: Typeclass example</li>
+	    </ul>
+	  </aside>
+	  <h2>A Better Either</h2>
+          <pre class="fragment"><code data-trim class="scala">
+scala> val result = Right(6)
+result: scala.util.Right[Nothing,Int] = Right(6)
+
+scala> result.right.map(_ + 4)
+res30: Either[Nothing,Int] = Right(10)
+
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+scala> val more = \/-(6)
+more: scalaz.\/-[Int] = \/-(6)
+
+scala> more.map(_ + 4)
+res31: scalaz.\/[Nothing,Int] = \/-(10)
+          </code></pre>
+
+        </section>
+
+        <section>
+	  <aside class="notes">
+	  </aside>
+	  <h2>A Better Either</h2>
+	  <h5 class="fragment">“But can't we give it a better name than that strange symbol?”</h5>
+	  <p class="fragment">“It's just a mathematical symbol <i class="fragment">like plus.”</i></p>
+	  <p class="fragment">“Use it for a week and we can discuss it after that.”</p>
+	  <br/>
+	  <p class="fragment"><code>type Result[+A] = ApplicationError \/ A</code>
+        </section>
+
+        <section>
+	  <aside class="notes">
 	    <ul>
 	      <li>Next slide: Typeclass for defining order</li>
 	    </ul>
 	  </aside>
 	  <h2>Typeclasses</h2>
-	  <h3 class="fragment">A simple example</h3>
+	  <h5 class="fragment">A simple example</h5>
           <p class="fragment"><small><i>(This example lifted from Martin Odersky's paper: <a href="http://ropas.snu.ac.kr/~bruno/papers/TypeClasses.pdf">Type Classes as Objects and Implicits</a>)</i></small></p>
         </section>
 
@@ -244,7 +292,7 @@ res3: Option[Money] = Some(Money(EUR, 3))
 	    </ul>
 	  </aside>
 	  <h2>Typeclasses</h2>
-	  <h3>A simple example</h3>
+	  <h5>A simple example</h5>
           <p>A trait for defining order:</p>
           <pre><code data-trim contenteditable style="font-size: 18px; margin-top: 20px;">
 trait Ord[T] {
@@ -275,7 +323,7 @@ res5: List[Int] = List(1, 2, 3)
 	    </ul>
 	  </aside>
 	  <h2>Typeclasses</h2>
-	  <h3>A simple example</h3>
+	  <h5>A simple example</h5>
           <pre class="fragment"><code data-trim class="scala">
 implicit object intOrd extends Ord[Int] ... // as before
           </code></pre>
@@ -289,7 +337,7 @@ res4: List(1, 3, 4, 6, 7)
           </code></pre>
           <p class="fragment">No implicit in scope:</p>
           <pre class="fragment"><code data-trim class="scala">
-scala> sort[String](List("z", "y", "x", "w")
+scala> sort[String](List("z", "y", "x", "w"))
 &lt;console&gt;:28: error: 
             could not find implicit value for parameter ord: Ord[String]
           </code></pre>
@@ -398,59 +446,106 @@ implicit val equalMoney: Equal[Money] = Equal.equalA[Money]
         </section>
 
         <section>
+          <h2>Typeclasses</h2>
+          <h5 class="fragment">Functor</h5>
+          <pre class="fragment"><code data-trim class="scala">
+scala> List(10, 20, 30).map(_ / 10)
+res13: List[Int] = List(1, 2, 3)
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+scala> "hello".some.map(_.length)
+res14: Option[Int] = Some(5)
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+scala> val f = Future(200).map(_ === 404)
+
+scala> f.foreach(println)
+false
+          </code></pre>
+        </section>
+
+        <section>
 	  <aside class="notes">
 	    <ul>
+	      <li>DESCRIBE F[_]!!!!</li>
 	      <li>Last element: Multi element list</li>
 	      <li>Next slide: Applicative</li>
 	    </ul>
 	  </aside>
           <h2>Typeclasses</h2>
-          <h5 class="fragment">Functor</h5>
-          <p class="fragment">A <code>Functor</code> is something that can be <i>mapped</i>:</p>
+          <h5>Functor</h5>
+          <p class="fragment">A <code>Functor</code> is something that can be <i>mapped</i></p>
           <pre class="fragment"><code data-trim class="scala">
 def addInt[F[_]](i: Int, toAdd: F[Int])(implicit f: Functor[F]): F[Int] = {
   f.map(toAdd)(_ + i)
 }
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
-scala> addInt(5, List(10))
-res0: List[Int] = List(15)
-
 scala> addInt(6, 10.some)
 res1: Option[Int] = Some(16)
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
-scala> addSix(2, List(10, 11, 12, 13))
+scala> addInt(2, List(10, 11, 12, 13))
 res2: List[Int] = List(12, 13, 14, 15)
           </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+scala> val f = addInt(100, Future(1))
+
+scala> f.foreach(println)
+101
+          </code></pre>
         </section>
-<!--
+
         <section>
 	  <aside class="notes">
 	    <ul>
+	      <li>We can <i>lift</i> a function</li>
 	      <li>Last element: Not just for option</li>
 	      <li>Next slide: Monoid</li>
 	    </ul>
 	  </aside>
           <h2>Typeclasses</h2>
-          <h5 class="fragment">Applicative Functor</h5>
-	  <!XX Is this applicative or applicative functor XX>
-	  <p class="fragment">Scenario:</p>
+          <h5 class="fragment">Applicative</h5>
           <pre class="fragment"><code data-trim class="scala">
-def f: (A, B, C) => D = ...
+scala> def sum(a: Int, b: Int, c: Int) = a + b + c
+
+scala> val numbers = Map("a" -> 4, "b" -> 5, "c" -> 6)
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
-val oa: Option[A] = ...
-val ob: Option[B] = ...
-val oc: Option[C] = ...
+scala> val maybeA = numbers.get("a")
+maybeA: Option[Int] = Some(4)
+
+scala> val maybeB = numbers.get("b")
+maybeB: Option[Int] = Some(5)
+
+scala> val maybeC = numbers.get("c")
+maybeC: Option[Int] = Some(6)
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
-val od: Option[D] = (oa |@| ob |@| oc)(f)
+scala> val maybeTotal = (maybeA |@| maybeB |@| maybeC)(sum)
+maybeTotal: Option[Int] = Some(15)
           </code></pre>
-	  <p class="fragment">Think of this as <code>map</code> for an arbitrary number of arguments</p>
+        </section>
+
+        <section>
+	  <aside class="notes">
+	    <ul>
+	      <li>Next slide: Monoid</li>
+	    </ul>
+	  </aside>
+          <h2>Typeclasses</h2>
+          <h5>Applicative</h5>
+          <pre class="fragment"><code data-trim class="scala">
+scala> val maybeD = numbers.get("d")
+maybeD: Option[Int] = None
+
+scala> val newTotal = (maybeB |@| maybeC |@| maybeD)(sum)
+newTotal: Option[Int] = None
+          </code></pre>
+	  <p class="fragment">Think of this as <code>map</code> for a function with an arbitrary number of arguments</p>
 	  <p class="fragment">Of course, any <code>Applicative</code>, not just <code>Option</code></p>
         </section>
--->
+
         <section>
 	  <aside class="notes">
 	    <ul>
@@ -478,6 +573,8 @@ trait Monoid[F] extends Semigroup[F] {
         <section>
 	  <aside class="notes">
 	    <ul>
+	      <li>"However plus is defined for that specific type"</li>
+	      <li>Integer is defined as plus rather than multiplication by default</li>
 	      <li>Last element: String concatenation</li>
 	      <li>Next slide: Identity definition</li>
 	    </ul>
@@ -487,26 +584,25 @@ trait Monoid[F] extends Semigroup[F] {
           <h6 class="fragment">Associative</h6>
 	  <div class="fragment"><code>a + (b + c)</code> is equal to <code class="fragment">(a + b) + c</code></div>
 	  <br/>
-          <ul>
-            <li class="fragment">Addition:</li>
+          <p class="fragment">Addition</p>
           <pre class="fragment"><code data-trim class="scala">
 5 + (6 + 7) === (5 + 6) + 7
           </code></pre>
-            <li class="fragment">Multiplication:</li>
+          <p class="fragment">Multiplication</p>
           <pre class="fragment"><code data-trim class="scala">
 10 * (2 * 5) === (10 * 2) * 5
           </code></pre>
-            <li class="fragment">String concatentation: <code class="fragment">"abc".concat("def.concat("ghi"))</code></li>
+          <p class="fragment">String concatenation</p>
           <pre class="fragment"><code data-trim class="scala">
 "abc".concat("def".concat("ghi")) === ("abc".concat("def")).concat("ghi")
           </code></pre>
-          </ul>
 
         </section>
 
         <section>
 	  <aside class="notes">
 	    <ul>
+	      <li>What about a monoid for booleans?</li>
 	      <li>Next slide: Monoid foldMap</li>
 	    </ul>
 	  </aside>
@@ -539,7 +635,7 @@ Integer.min(a, Integer.MAX_VALUE) === a
 	    </ul>
 	  </aside>
           <h2>Typeclasses</h2>
-          <h5 class="fragment">Monoid</h5>
+          <h5>Monoid</h5>
 	  <p class="fragment"><code>foldMap</code></p>
           <pre class="fragment"><code data-trim class="scala">
 scala> List(10, 9, 8).foldMap(i => i)
@@ -561,15 +657,15 @@ res22: List[Int] = List(5, 4, 5)
 	    </ul>
 	  </aside>
 	  <h2>Typeclasses</h2>
-          <h5 class="fragment">Monoid</h5>
+          <h5>Monoid</h5>
 	  <p class="fragment">Using append</p>
           <pre class="fragment"><code data-trim class="scala">
 scala> 1 |+| 2 |+| 3
 res23: Int = 6
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
-scala> 1.some |+| 2.some |+| None |+| 3.some
-res24: Option[Int] = Some(6)
+scala> "Hello".some |+| None |+| "World".some
+res18: Option[String] = Some(HelloWorld)
           </code></pre>
         </section>
 
@@ -598,6 +694,7 @@ res25: Map(1 -> List(a, b, z), 3 -> List(yyy, zzz), 2 -> List(aa, bb))
         <section>
 	  <aside class="notes">
 	    <ul>
+	      <li>Say that foldMap is not just on List, is on option and others too</li>
 	      <li>Next slide: Monads</li>
 	    </ul>
 	  </aside>
@@ -642,6 +739,7 @@ res32: Map(b -> 3, a -> 1, c -> 2)
           <h5>Monad</h5>
           <p class="fragment">My experience with monads:</p>
           <ul>
+            <li class="fragment">They're not as confusing as the Internet seems to think.</li>
             <li class="fragment">There are plenty of silly analogies on the Internet.</li>
             <li class="fragment">The name of <code>for</code> comprehensions is confusing.</li>
             <li class="fragment">The <code>List</code> monad is quite a confusing place to start.</li>
@@ -653,6 +751,7 @@ res32: Map(b -> 3, a -> 1, c -> 2)
         <section>
 	  <aside class="notes">
 	    <ul>
+	      <li>A monad encapsulates a specific pattern that occurs so frequently in programming and functional programming generally</li>
 	      <li>Next slide: Option example</li>
 	    </ul>
 	  </aside>
@@ -669,7 +768,7 @@ res32: Map(b -> 3, a -> 1, c -> 2)
 	  </aside>
           <h2>What is a monad?</h2>
           <h5 class="fragment">Examples</h5>
-          <p class="fragment"><code>Option</code></p>
+          <p class="fragment">Get two values from a map and divide one by the other</p>
           <p class="fragment">Retrieve a value from a map <i class="fragment">(but it might not be there)</i></p>
           <pre class="fragment"><code data-trim class="scala">
 def get(key: A): Option[B]
@@ -689,14 +788,14 @@ def divide(numerator: Int, denominator: Int): Option[Int]
 	  </aside>
           <h2>What is a monad?</h2>
           <h5>Examples</h5>
-          <p class="fragment"><code>Future</code></p>
-          <p class="fragment">Make an HTTP call</p>
+          <p class="fragment">Get some data from a web page and persist it to a database</p>
+          <p class="fragment">Make an HTTP call <i class="fragment">(eventually)</i></p>
           <pre class="fragment"><code data-trim class="scala">
-def postRequest(url: String, data: String): Future[HttpResponse]
+def httpGet(url: String): Future[String]
           </code></pre>
-          <p class="fragment">Store a value in a database</p>
+          <p class="fragment">Store a value in a database <i class="fragment">(eventually)</i></p>
           <pre class="fragment"><code data-trim class="scala">
-def persist(userDetails: User): Future[Unit]
+def persist(data: String): Future[Unit]
           </code></pre>
         </section>
 
@@ -714,10 +813,10 @@ def get(key: A): Option[B]
 def divide(numerator: Int, denominator: Int): Option[Int]
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
-def postRequest(url: String, data: String): Future[HttpResponse]
-def persist(userDetails: User): Future[Unit]
+def httpGet(url: String): Future[String]
+def persist(data: String): Future[Unit]
           </code></pre>
-          <p class="fragment">The functions all return <code>Something[Type]</code></p>
+          <p class="fragment">The functions all return some type with some extra behaviour</p>
           <p class="fragment">Is this useful? Can we abstract this?</p>
         </section>
 
@@ -753,7 +852,7 @@ trait Monad[M[_]] { self =>
           <h2>Typeclasses</h2>
           <h5>Monad</h5>
 	  <p class="fragment"><code>def point[A](a: => A): M[A]</code></p>
-	  <p class="fragment"><i>Given an <code>A</code>, this will give me an <code>M[A]</code></i></p>
+	  <p class="fragment"><i>“Given an <code>A</code>, this will give me an <code>M[A]</code>.”</i></p>
         </section>
 
         <section>
@@ -767,14 +866,15 @@ trait Monad[M[_]] { self =>
           <h2>Typeclasses</h2>
           <h5>Monad</h5>
 	  <p class="fragment"><code>def bind[A,B](fa: M[A])(f: (A) => M[B]): M[B]</code></p>
-          <p class="fragment"><i>If I have an <code>M[A]</code>,</i></p>
+          <p class="fragment"><i>“If I have an <code>M[A]</code>,</i></p>
           <p class="fragment"><i>and a function <code>A => M[B]</code>,</i></p>
-          <p class="fragment"><i>then I can use this to get <code>M[B]</code></i></p>
+          <p class="fragment"><i>then I can use this to get <code>M[B]</code>.”</i></p>
         </section>
 
         <section>
 	  <aside class="notes">
 	    <ul>
+	      <li>Basically removes the differing behaviour</li>
 	      <li>Last element: >>= </li>
 	      <li>Next slide: For comprehensions</li>
 	    </ul>
@@ -831,19 +931,13 @@ for {
           <h2>Different monads, different behaviour:</h2>
           <ul>
             <li class="fragment"><code>Option</code>: The ability to fail fast</li>
-            <li class="fragment"><code>Either</code>: The ability to fail fast, telling us about the failure</li>
+            <li class="fragment"><code>\/</code>: The ability to fail fast, telling us about the failure</li>
             <li class="fragment"><code>Future</code>: Perform computations concurrently</li>
             <li class="fragment"><code>Reader</code>: Provide a read-only environment</li>
             <li class="fragment"><code>Id</code>: Do nothing special <i class="fragment">(???)</i></li>
           </ul>
         </section>
-<!--
-        <section>
-	  <h2>Typeclasses</h2>
-	  <h5>Reader</h5>
-	  <p>TODO</p>
-        </section>
--->
+
         <section>
 	  <aside class="notes">
 	    <ul>
@@ -941,6 +1035,32 @@ address: Address = Address(Paris)
         </section>
 
         <section>
+	  <h2>Abstraction over monads</h2>
+          <pre class="fragment"><code data-trim class="scala">
+def runLongCalc(a: Int, b: Int): Future[Int] = {
+  Future {
+    // ... expensive calculating here ...
+  }
+}
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+def runLongCalc[M[_]: Monad](a: Int,b: Int)(implicit m: Monad[M]): M[Int] = {
+  m.point {
+    // ... expensive calculating here ...
+  }
+}
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
+scala> runLongCalc[Id](10, 5)
+res34: scalaz.Scalaz.Id[Int] = ...
+
+scala> runLongCalc[Future](10, 5)
+res35: scala.concurrent.Future[Int] = ...
+
+          </code></pre>
+        </section>
+
+        <section>
           <h2>Thank you</h2>
           <h5>Useful links</h5>
           <ul>
@@ -955,309 +1075,6 @@ address: Address = Address(Paris)
 	  <p>Noel Markham</p>
           <a href="http://noelmarkham.github.io/scalaz-scala.io">Slides: http://noelmarkham.github.io/scalaz-scala.io</a>
         </section>
-<!--
-        <section>
-          <h2>Heads Up</h2>
-          <p>
-            reveal.js is a for easily creating beautiful presentations using HTML. You'll need a browser with
-            support for CSS 3D transforms to see it in its full glory.
-          </p>
-
-          <aside class="notes">
-            Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
-          </aside>
-        </section>
-
-        <section>
-          <section>
-            <h2>Vertical Slides</h2>
-            <p>
-              Slides can be nested inside of other slides,
-              try pressing <a href="#" class="navigate-down">down</a>.
-            </p>
-            <a href="#" class="image navigate-down">
-              <img width="178" height="238" src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Down arrow">
-            </a>
-          </section>
-          <section>
-            <h2>Basement Level 1</h2>
-            <p>Press down or up to navigate.</p>
-          </section>
-          <section>
-            <h2>Basement Level 2</h2>
-            <p>Cornify</p>
-            <a class="test" href="http://cornify.com">
-              <img width="280" height="326" src="https://s3.amazonaws.com/hakim-static/reveal-js/cornify.gif" alt="Unicorn">
-            </a>
-          </section>
-          <section>
-            <h2>Basement Level 3</h2>
-            <p>That's it, time to go back up.</p>
-            <a href="#/2" class="image">
-              <img width="178" height="238" src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Up arrow" style="-webkit-transform: rotate(180deg);">
-            </a>
-          </section>
-        </section>
-
-        <section>
-          <h2>Slides</h2>
-          <p>
-            Not a coder? No problem. There's a fully-featured visual editor for authoring these, try it out at <a href="http://slid.es" target="_blank">http://slid.es</a>.
-          </p>
-        </section>
-
-        <section>
-          <h2>Point of View</h2>
-          <p>
-            Press <strong>ESC</strong> to enter the slide overview.
-          </p>
-          <p>
-            Hold down alt and click on any element to zoom in on it using <a href="http://lab.hakim.se/zoom-js">zoom.js</a>. Alt + click anywhere to zoom back out.
-          </p>
-        </section>
-
-        <section>
-          <h2>Works in Mobile Safari</h2>
-          <p>
-            Try it out! You can swipe through the slides and pinch your way to the overview.
-          </p>
-        </section>
-
-        <section>
-          <h2>Marvelous Unordered List</h2>
-          <ul>
-            <li>No order here</li>
-            <li>Or here</li>
-            <li>Or here</li>
-            <li>Or here</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>Fantastic Ordered List</h2>
-          <ol>
-            <li>One is smaller than...</li>
-            <li>Two is smaller than...</li>
-            <li>Three!</li>
-          </ol>
-        </section>
-
-        <section data-markdown>
-          <script type="text/template">
-            ## Markdown support
-
-            For those of you who like that sort of thing. Instructions and a bit more info available [here](https://github.com/hakimel/reveal.js#markdown).
-
-            ```
-            <section data-markdown>
-              ## Markdown support
-
-              For those of you who like that sort of thing.
-              Instructions and a bit more info available [here](https://github.com/hakimel/reveal.js#markdown).
-            </section>
-            ```
-          </script>
-        </section>
-
-        <section id="transitions">
-          <h2>Transition Styles</h2>
-          <p>
-            You can select from different transitions, like: <br>
-            <a href="?transition=cube#/transitions">Cube</a> -
-            <a href="?transition=page#/transitions">Page</a> -
-            <a href="?transition=concave#/transitions">Concave</a> -
-            <a href="?transition=zoom#/transitions">Zoom</a> -
-            <a href="?transition=linear#/transitions">Linear</a> -
-            <a href="?transition=fade#/transitions">Fade</a> -
-            <a href="?transition=none#/transitions">None</a> -
-            <a href="?#/transitions">Default</a>
-          </p>
-        </section>
-
-        <section id="themes">
-          <h2>Themes</h2>
-          <p>
-            Reveal.js comes with a few themes built in: <br>
-            <a href="?#/themes">Default</a> -
-            <a href="?theme=sky#/themes">Sky</a> -
-            <a href="?theme=beige#/themes">Beige</a> -
-            <a href="?theme=simple#/themes">Simple</a> -
-            <a href="?theme=serif#/themes">Serif</a> -
-            <a href="?theme=night#/themes">Night</a> <br>
-            <a href="?theme=moon#/themes">Moon</a> -
-            <a href="?theme=solarized#/themes">Solarized</a>
-          </p>
-          <p>
-            <small>
-              * Theme demos are loaded after the presentation which leads to flicker. In production you should load your theme in the <code>&lt;head&gt;</code> using a <code>&lt;link&gt;</code>.
-            </small>
-          </p>
-        </section>
-
-        <section>
-          <h2>Global State</h2>
-          <p>
-            Set <code>data-state="something"</code> on a slide and <code>"something"</code>
-            will be added as a class to the document element when the slide is open. This lets you
-            apply broader style changes, like switching the background.
-          </p>
-        </section>
-
-        <section data-state="customevent">
-          <h2>Custom Events</h2>
-          <p>
-            Additionally custom events can be triggered on a per slide basis by binding to the <code>data-state</code> name.
-          </p>
-          <pre><code data-trim contenteditable style="font-size: 18px; margin-top: 20px;">
-Reveal.addEventListener( 'customevent', function() {
-  console.log( '"customevent" has fired' );
-} );
-          </code></pre>
-        </section>
-
-        <section>
-          <section data-background="#007777">
-            <h2>Slide Backgrounds</h2>
-            <p>
-              Set <code>data-background="#007777"</code> on a slide to change the full page background to the given color. All CSS color formats are supported.
-            </p>
-            <a href="#" class="image navigate-down">
-              <img width="178" height="238" src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Down arrow">
-            </a>
-          </section>
-          <section data-background="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png">
-            <h2>Image Backgrounds</h2>
-            <pre><code>&lt;section data-background="image.png"&gt;</code></pre>
-          </section>
-          <section data-background="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" data-background-repeat="repeat" data-background-size="100px">
-            <h2>Repeated Image Backgrounds</h2>
-            <pre><code style="word-wrap: break-word;">&lt;section data-background="image.png" data-background-repeat="repeat" data-background-size="100px"&gt;</code></pre>
-          </section>
-        </section>
-
-        <section data-transition="linear" data-background="#4d7e65" data-background-transition="slide">
-          <h2>Background Transitions</h2>
-          <p>
-            Pass reveal.js the <code>backgroundTransition: 'slide'</code> config argument to make backgrounds slide rather than fade.
-          </p>
-        </section>
-
-        <section data-transition="linear" data-background="#8c4738" data-background-transition="slide">
-          <h2>Background Transition Override</h2>
-          <p>
-            You can override background transitions per slide by using <code>data-background-transition="slide"</code>.
-          </p>
-        </section>
-
-        <section>
-          <h2>Clever Quotes</h2>
-          <p>
-            These guys come in two forms, inline: <q cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-            &ldquo;The nice thing about standards is that there are so many to choose from&rdquo;</q> and block:
-          </p>
-          <blockquote cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-            &ldquo;For years there has been a theory that millions of monkeys typing at random on millions of typewriters would
-            reproduce the entire works of Shakespeare. The Internet has proven this theory to be untrue.&rdquo;
-          </blockquote>
-        </section>
-
-        <section>
-          <h2>Pretty Code</h2>
-          <pre><code data-trim contenteditable>
-function linkify( selector ) {
-  if( supports3DTransforms ) {
-
-    var nodes = document.querySelectorAll( selector );
-
-    for( var i = 0, len = nodes.length; i &lt; len; i++ ) {
-      var node = nodes[i];
-
-      if( !node.className ) {
-        node.className += ' roll';
-      }
-    }
-  }
-}
-          </code></pre>
-          <p>Courtesy of <a href="http://softwaremaniacs.org/soft/highlight/en/description/">highlight.js</a>.</p>
-        </section>
-
-        <section>
-          <h2>Intergalactic Interconnections</h2>
-          <p>
-            You can link between slides internally,
-            <a href="#/2/3">like this</a>.
-          </p>
-        </section>
-
-        <section>
-          <section id="zfragments">
-            <h2>Fragmented Views</h2>
-            <p>Hit the next arrow...</p>
-            <p class="fragment">... to step through ...</p>
-            <ol>
-              <li class="fragment"><code>any type</code></li>
-              <li class="fragment"><em>of view</em></li>
-              <li class="fragment"><strong>fragments</strong></li>
-            </ol>
-
-            <aside class="notes">
-              This slide has fragments which are also stepped through in the notes window.
-            </aside>
-          </section>
-          <section>
-            <h2>Fragment Styles</h2>
-            <p>There's a few styles of fragments, like:</p>
-            <p class="fragment grow">grow</p>
-            <p class="fragment shrink">shrink</p>
-            <p class="fragment roll-in">roll-in</p>
-            <p class="fragment fade-out">fade-out</p>
-            <p class="fragment highlight-red">highlight-red</p>
-            <p class="fragment highlight-green">highlight-green</p>
-            <p class="fragment highlight-blue">highlight-blue</p>
-            <p class="fragment current-visible">current-visible</p>
-            <p class="fragment highlight-current-blue">highlight-current-blue</p>
-          </section>
-        </section>
-
-        <section>
-          <h2>Spectacular image!</h2>
-          <a class="image" href="http://lab.hakim.se/meny/" target="_blank">
-            <img width="320" height="299" src="http://s3.amazonaws.com/hakim-static/portfolio/images/meny.png" alt="Meny">
-          </a>
-        </section>
-
-        <section>
-          <h2>Export to PDF</h2>
-          <p>Presentations can be <a href="https://github.com/hakimel/reveal.js#pdf-export">exported to PDF</a>, below is an example that's been uploaded to SlideShare.</p>
-          <iframe id="slideshare" src="http://www.slideshare.net/slideshow/embed_code/13872948" width="455" height="356" style="margin:0;overflow:hidden;border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen> </iframe>
-          <script>
-            document.getElementById('slideshare').attributeName = 'allowfullscreen';
-          </script>
-        </section>
-
-        <section>
-          <h2>Take a Moment</h2>
-          <p>
-            Press b or period on your keyboard to enter the 'paused' mode. This mode is helpful when you want to take distracting slides off the screen
-            during a presentation.
-          </p>
-        </section>
-
-        <section>
-          <h2>Stellar Links</h2>
-          <ul>
-            <li><a href="http://slid.es">Try the online editor</a></li>
-            <li><a href="https://github.com/hakimel/reveal.js">Source code on GitHub</a></li>
-            <li><a href="http://twitter.com/hakimel">Follow me on Twitter</a></li>
-          </ul>
-        </section>
-
-        <section>
-          <h1>THE END</h1>
-          <h3>BY Hakim El Hattab / hakim.se</h3>
-        </section>
--->
       </div>
 
     </div>
