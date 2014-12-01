@@ -51,7 +51,7 @@
           </aside>
 	  <h1>Scalaz</h1>
 	  <h3 class="fragment">Or: How I learned to stop worrying and love monads</h3>
-	  <p>Scala.io - 24 October 2014</p>
+	  <p>Scala Exchange - 8 December 2014</p>
 	  <p>Noel Markham - <a href="http://twitter.com/noelmarkham">@noelmarkham</a></p>
         </section>
 
@@ -117,16 +117,16 @@ boolT: Boolean = true
 scala> val boolF = 6 > 10
 boolF: Boolean = false
 
-scala> boolT.option("vrai")
-res0: Option[String] = Some(vrai)
+scala> boolT.option("corrie")
+res0: Option[String] = Some(corrie)
 
-scala> boolF.option("vrai")
+scala> boolF.option("emmerdale")
 res1: Option[String] = None
 	  </code></pre>
           <p class="fragment">Neater than:
 	  <pre class="fragment"><code data-trim class="scala">
-scala> if(boolT) Some("vrai") else None
-res2: Option[String] = Some(vrai)
+scala> if(boolT) Some("corrie") else None
+res2: Option[String] = Some(corrie)
 	  </code></pre>
         </section>
 
@@ -143,9 +143,9 @@ res2: Option[String] = Some(vrai)
 scala> "6".parseInt
 res3: scalaz.Validation[NumberFormatException,Int] = Success(6)
 
-scala> "rosbif".parseBoolean
+scala> "corrie".parseBoolean
 res4: scalaz.Validation[IllegalArgumentException,Boolean] =
-      Failure(java.lang.IllegalArgumentException: For input string: "rosbif")
+      Failure(java.lang.IllegalArgumentException: For input string: "corrie")
           </code></pre>
         </section>
 
@@ -187,12 +187,12 @@ List()
 	  <h3>All types</h3>
           <p class="fragment"><code>.some</code></p>
           <pre class="fragment"><code data-trim class="scala">
-scala> "rosbif".some
-res6: Option[String] = Some(rosbif)
+scala> "corrie".some
+res6: Option[String] = Some(corrie)
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
-scala> Some("rosbif")
-res7: Some[String] = Some(rosbif)
+scala> Some("emmerdale")
+res7: Some[String] = Some(emmerdale)
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
 scala> Some(1) |+| Some(2)
@@ -485,7 +485,7 @@ false
 	    <ul>
 	      <li>DESCRIBE F[_]!!!!</li>
 	      <li>Last element: f.foreach(println)</li>
-	      <li>Next slide: Applicative</li>
+	      <li>Next slide: Monoid</li>
 	    </ul>
 	  </aside>
           <h2>Typeclasses</h2>
@@ -510,7 +510,7 @@ scala> f.foreach(println)
 101
           </code></pre>
         </section>
-
+<!--
         <section>
 	  <aside class="notes">
 	    <ul>
@@ -561,7 +561,7 @@ newTotal: Option[Int] = None
 	  <p class="fragment">Think of this as <code>map</code> for a function with an arbitrary number of arguments</p>
 	  <p class="fragment">Of course, any <code>Applicative</code>, not just <code>Option</code></p>
         </section>
-
+-->
         <section>
 	  <aside class="notes">
 	    <ul>
@@ -773,7 +773,7 @@ res32: Map(b -> 3, a -> 1, c -> 2)
 	      <li>Next slide: Examples</li>
 	    </ul>
 	  </aside>
-	  <p class="fragment">A monad encapsulates a specific pattern that occurs frequently</p>
+	  <p class="fragment">A monad encapsulates a <b>specific</b> pattern that occurs frequently</p>
         </section>
 
         <section>
@@ -877,7 +877,7 @@ trait Monad[M[_]] { self =>
         <section>
 	  <aside class="notes">
 	    <ul>
-	      <li>Say how this would chain, "If I had a M[B] and a B => M[C] etc</li>
+	      <li>Say how this would chain, "If I had a M[B] and a B => M[C]" etc</li>
 	      <li>Last element: then I can use this...</li>
 	      <li>Next slide: Bind function</li>
 	    </ul>
@@ -914,7 +914,6 @@ def addressFromUsername(username: String): Option[Address] =
 getUserId(username) >>= getUser >>= getAddress
           </code></pre>
         </section>
-
 
         <section>
 	  <aside class="notes">
@@ -1004,7 +1003,7 @@ val userTestF: Int => Future[User] =
                            i => Future.successful(User(i, "Bob", "Smith"))
 
 val addressTestF: User => Future[Address] = 
-                           _ => Future.successful(Address("Paris"))
+                           _ => Future.successful(Address("London"))
 
 val wiringTest = addressFromUserId(userTestF, addressTestF)(1234)
 
@@ -1035,7 +1034,7 @@ def addressFromUserId[M[_]: Monad](getUserFunc:    Int => M[User],
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
 val userTestF: Int => Id[User] = i => User(i, "Bob", "Smith")
-val addressTestF: User => Id[Address] = _ => Address("Paris")
+val addressTestF: User => Id[Address] = _ => Address("London")
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
 val wiringTest = addressFromUserId[Id](userTestF, addressTestF)(1234)
@@ -1049,7 +1048,7 @@ scalaz.Scalaz.Id[Address]
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
 scala> val address: Address = wiringTest
-address: Address = Address(Paris)
+address: Address = Address(London)
           </code></pre>
         </section>
 
@@ -1097,7 +1096,7 @@ res34: scalaz.Scalaz.Id[Int] = ...
 	  <br/>
 	  <br/>
 	  <p>Noel Markham</p>
-          <a href="http://noelmarkham.github.io/scalaz-scala.io">Slides: http://noelmarkham.github.io/scalaz-scala.io</a>
+            <a href="http://noelmarkham.github.io/scalaz-scala-exchange/">Slides: http://noelmarkham.github.io/scalaz-scala-exchange</a>
         </section>
       </div>
 
