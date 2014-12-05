@@ -318,11 +318,11 @@ body {
 .reveal pre {
 	display: block;
 	position: relative;
-	width: 90%;
-	margin: 15px auto;
-
+	width: 120%;
+	margin: 15px;
+        left: -10%;
 	text-align: left;
-	font-size: 0.55em;
+	font-size: 1.0em;
 	font-family: monospace;
 	line-height: 1.2em;
 
@@ -336,7 +336,7 @@ body {
 .reveal pre code {
 	padding: 5px;
 	overflow: auto;
-	max-height: 400px;
+	max-height: 500px;
 	word-wrap: normal;
 }
 .reveal pre.stretch code {
@@ -560,7 +560,7 @@ body {
 	display: none;
 	position: absolute;
 	width: 100%;
-	padding: 20px 0px;
+	padding: 0px 0px;
 
 	z-index: 10;
 	line-height: 1.2em;
