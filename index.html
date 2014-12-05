@@ -135,12 +135,14 @@ res2: Option[String] = Some(corrie)
 	  <p class="fragment"<code>.parseXXX</code></p>
 	  <pre class="fragment"><code data-trim class="scala">
 scala> val i = "6".parseInt
-i: Validation[NumberFormatException,Int] = Success(6)
+i: Validation[
+     NumberFormatException,Int] = Success(6)
 
 scala> val b = "corrie".parseBoolean
-b: Validation[IllegalArgumentException,Boolean] =
-     Failure(java.lang.IllegalArgumentException:
-                          For input string: "corrie")
+b: Validation[
+     IllegalArgumentException,Boolean] =
+ Failure(java.lang.IllegalArgumentException:
+                 For input string: "corrie")
           </code></pre>
         </section>
 
@@ -154,7 +156,7 @@ b: Validation[IllegalArgumentException,Boolean] =
 	  <h3>Lists</h3>
           <p class="fragment"><code>.allPairs</code></p>
           <pre class="fragment"><code data-trim class="scala">
-scala> List(1, 2, 3, 4).allPairs.foreach(println)
+> List(1, 2, 3).allPairs.foreach(println)
 (1,2)
 (2,3)
 (3,4)
@@ -173,7 +175,7 @@ scala> List(1, 2, 3, 4).allPairs.foreach(println)
           <h3>Lists</h3>
           <p><code>.powerset</code></p>
           <pre><code data-trim class="scala">
-scala> List('a', 'b', 'c').powerset.foreach(println)
+> List('a','b','c').powerset.foreach(println)
 List(a, b, c)
 List(a, b)
 List(a, c)
@@ -205,7 +207,7 @@ res7: Some[String] = Some(emmerdale)
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
 scala> Some(1) |+| Some(2)
-&lt;console&gt;:14: value |+| is not a member of Some[Int]
+error: value |+| is not a member of Some[Int]
               Some(1) |+| Some(2)
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
@@ -223,7 +225,7 @@ res12: Option[Int] = Some(3)
           <h3>All types</h3>
           <p><code>.some</code></p>
           <pre class="fragment"><code data-trim class="scala">
-scala> case class Money(currency: String, amount: Int)
+> case class Money(ccy: String, amount: Int)
 defined class Money
 
 scala> Money("EUR", 3).some
@@ -269,10 +271,10 @@ res3: Option[Money] = Some(Money(EUR, 3))
 	  <h2>A Better Either</h2>
           <h3>“Biased” to the right</h3>
           <pre class="fragment"><code data-trim class="scala">
-scala> val result = Right(6)
-result: scala.util.Right[Nothing,Int] = Right(6)
+scala> val res = Right(6)
+res: scala.util.Right[Nothing,Int] = Right(6)
 
-scala> result.right.map(_ + 4)
+scala> res.right.map(_ + 4)
 res30: Either[Nothing,Int] = Right(10)
 
           </code></pre>
@@ -317,38 +319,49 @@ res31: scalaz.\/[Nothing,Int] = \/-(10)
         <section>
 	  <aside class="notes">
 	    <ul>
-	      <li>Last element: Sorting with the intOrd typeclass</li>
-	      <li>Next slide: Make the ordering implicit</li>
+	      <li>Last element: intOrd implementation</li>
+	      <li>Next slide: Use it with a sort method</li>
 	    </ul>
 	  </aside>
 	  <h2>Typeclasses</h2>
 	  <h5>A simple example</h5>
           <pre class="fragment"><code data-trim class="scala">
 trait Ord[T] {
-  def compare(a: T, b: T): Boolean
+ def compare(a: T, b: T): Boolean
 }
-        </code></pre>
-          <p class="fragment">An <code>Ord</code> instance <i class="fragment">for a specific type:</i></p>
-          <pre class="fragment"><code data-trim class="scala">
-object intOrd extends Ord[Int] {
-  def compare(a: Int, b: Int): Boolean = a <= b
-}
-        </code></pre>
-          <p class="fragment">This instance can be used when necessary:</p>
-          <pre class="fragment"><code data-trim class="scala">
-def sort[T](xs: List[T])(ord: Ord[T]): List[T] = ...
           </code></pre>
-          <pre class="fragment"><code data-trim class="scala">
+            <p class="fragment">An <code>Ord</code> instance <i class="fragment">for a specific type:</i></p>
+            <pre class="fragment"><code data-trim class="scala">
+object intOrd extends Ord[Int] {
+ def compare(a: Int, b: Int): Boolean = a <= b
+}
+          </code></pre>
+          </section>
+          <section>
+            <aside class="notes">
+              <ul>
+                <li>Last element: XXXX</li>
+                <li>Next slide: Make the ordering implicit</li>
+              </ul>
+            </aside>
+            <h2>Typeclasses</h2>
+            <h5 A simple example</h5>
+            <p>This instance can be used when necessary:</p>
+            <pre class="fragment"><code data-trim class="scala">
+def sort[T](xs: List[T])
+           (ord: Ord[T]): List[T] = ...
+            </code></pre>
+            <pre class="fragment"><code data-trim class="scala">
 scala> sort(List(3, 2, 1))(intOrd)
 res5: List[Int] = List(1, 2, 3)
-          </code></pre>
+            </code></pre>
         </section>
 
         <section>
 	  <aside class="notes">
 	    <ul>
-	      <li>Last element: Compiler error</li>
-	      <li>Next slide: Typeclasses in Java</li>
+	      <li>Last element: Sorted with implicits</li>
+	      <li>Next slide: No implicit in scope</li> CHANGE
 	    </ul>
 	  </aside>
 	  <h2>Typeclasses</h2>
@@ -359,13 +372,25 @@ implicit object intOrd extends Ord[Int] ...
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
 // as before
-def sort[T](xs: List[T])(implicit ord: Ord[T]):List[T]
+def sort[T](xs: List[T])
+           (implicit ord: Ord[T]):List[T]
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
 scala> sort[Int](List(4, 3, 6, 1, 7))
 res4: List(1, 3, 4, 6, 7)
           </code></pre>
-          <p class="fragment">No implicit in scope:</p>
+          </section>
+
+          <section>
+          <aside class="notes">
+            <ul>
+              <li>Last element: Compiler error</li> CHANGE
+              <li>Next slide: Typeclasses in Java</li> CHANGE
+            </ul>
+          </aside>
+          <h2>Typeclasses</h2>
+          <h5>A simple example</h5>
+          <p>No implicit in scope:</p>
           <pre class="fragment"><code data-trim class="scala">
 scala> sort[String](List("z", "y", "x", "w"))
 &lt;console&gt;:28: error: 
@@ -390,7 +415,7 @@ public interface Comparator&lt;T&gt; {
 	  <p class="fragment"><code>Collections.sort</code>:</p>
           <pre class="fragment"><code data-trim class="java">
 public static &lt;T&gt; void sort(List&lt;T&gt; list,
-                            Comparator&lt;? super T&gt; c)
+                      Comparator&lt;? super T&gt; c)
           </code></pre>
         </section>
 
@@ -451,11 +476,12 @@ class Money(val ccy: String, val amount: Int)
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
 implicit val equalMoney: Equal[Money] =
-  new Equal[Money] {
-    def equal(m1: Money, m2: Money): Boolean = {
-      m1.ccy === m2.ccy && m2.amount === m2.amount
-    }
+ new Equal[Money] {
+  def equal(m1: Money, m2: Money): Boolean = {
+      m1.ccy === m2.ccy && 
+      m2.amount === m2.amount
   }
+ }
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
 new Money("GBP", 3) === new Money("EUR", 3)
@@ -475,7 +501,7 @@ case class Money(ccy: String, amount: Int)
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
 implicit val equalMoney: Equal[Money] =
-                                   Equal.equalA[Money]
+                           Equal.equalA[Money]
           </code></pre>
         </section>
 
@@ -516,8 +542,9 @@ false
           <h2>Typeclasses</h2>
           <h5>Functor</h5>
           <pre class="fragment"><code data-trim class="scala">
-def addInt[F[_]](i: Int, toAdd: F[Int])
-                (implicit f: Functor[F]): F[Int] = {
+def addInt[F[_]]
+        (i: Int, toAdd: F[Int])
+        (implicit f: Functor[F]): F[Int] = {
   f.map(toAdd)(_ + i)
 }
           </code></pre>
@@ -531,7 +558,6 @@ res2: List[Int] = List(12, 13, 14, 15)
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
 scala> val f = addInt(100, Future(1))
-
 scala> f.foreach(println)
 101
           </code></pre>
@@ -638,7 +664,7 @@ trait Monoid[F] extends Semigroup[F] {
           <p class="fragment">String concatenation</p>
           <pre class="fragment"><code data-trim class="scala">
 "abc".concat("def".concat("ghi")) ===
-                   ("abc".concat("def")).concat("ghi")
+          ("abc".concat("def")).concat("ghi")
           </code></pre>
 
         </section>
@@ -683,11 +709,11 @@ Integer.min(a, Integer.MAX_VALUE) === a
           <h5>Monoid</h5>
 	  <p class="fragment"><code>foldMap</code></p>
           <pre class="fragment"><code data-trim class="scala">
-scala> List(10, 9, 8).foldMap(i => i)
+> List(10, 9, 8).foldMap(i => i)
 res20: Int = 27
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
-scala> List("A", "BB").foldMap(s => List(s.length))
+> List("A", "BB").foldMap(s => List(s.length))
 res22: List[Int] = List(1, 2)
           </code></pre>
         </section>
@@ -824,7 +850,7 @@ def get(key: A): Option[B]
           </code></pre>
           <p class="fragment">Perform division <i class="fragment">(but you might try to divide by zero)</i></p>
           <pre class="fragment"><code data-trim class="scala">
-def divide(numerator: Int, denom: Int): Option[Int]
+def divide(num: Int, denom: Int): Option[Int]
           </code></pre>
         </section>
 
@@ -859,7 +885,7 @@ def persist(data: String): Future[Unit]
           <p class="fragment">There is a pattern here:</p>
           <pre class="fragment"><code data-trim class="scala">
 def get(key: A): Option[B]
-def divide(numerator: Int, denom: Int): Option[Int]
+def divide(num: Int, denom: Int): Option[Int]
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
 def httpGet(url: String): Future[String]
@@ -880,14 +906,14 @@ def persist(data: String): Future[Unit]
           <h5>Monad</h5>
           <pre><code data-trim class="scala">
 trait Monad[M[_]] { self =>
-  def point[A](a: => A): M[A]
-  def bind[A, B](fa: M[A])(f: (A) => M[B]): M[B]
+ def point[A](a: => A): M[A]
+ def bind[A,B](fa: M[A])(f: (A) => M[B]): M[B]
 
-  def flatMap[A, B](f: A => M[B]) = bind(self)(f)
-  def >>=[A, B](f: A => M[B]) = bind(self)(f)
+ def flatMap[A,B](f:A => M[B]) = bind(self)(f)
+ def >>=[A,B](f: A => M[B]) = bind(self)(f)
 
-  def map[A, B](fa: M[A])(f: A => B) =
-                        bind(fa)(a => point(f(a)))
+ def map[A,B](fa: M[A])(f: A => B) =
+                  bind(fa)(a => point(f(a)))
 }
           </code></pre>
         </section>
@@ -1005,7 +1031,8 @@ def getUser(id: Int): Future[User]
 def getAddress(user: User): Future[Address]
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
-def addressFromUserId(userId: Int):Future[Address] = {
+def addressFromUserId
+         (userId: Int): Future[Address] = {
   for {
     user    <- getUser(userId)
     address <- getAddress(user)
@@ -1024,9 +1051,9 @@ def addressFromUserId(userId: Int):Future[Address] = {
 	  <p class="fragment">Refactoring:</p>
           <pre class="fragment"><code data-trim class="scala">
 def addressFromUserId
-          (getUserFunc:    Int => Future[User],
-           getAddressFunc: User => Future[Address])
-          (userId: Int): Future[Address] = {
+     (getUserFunc:    Int => Future[User],
+      getAddressFunc: User => Future[Address])
+     (userId: Int): Future[Address] = {
   for {
     user    <- getUserFunc(userId)
     address <- getAddressFunc(user)
@@ -1046,13 +1073,13 @@ def addressFromUserId
           <p>Refactoring:</p>
           <pre><code data-trim class="scala">
 val userTestF: Int => Future[User] = 
-      i => Future.successful(User(i, "Bob", "Smith"))
+      i => Future(User(i, "Bob", "Smith"))
 
-val addressTestF: User => Future[Address] = 
-      _ => Future.successful(Address("London"))
+val addrTestF: User => Future[Address] = 
+      _ => Future(Address("London"))
 
-val wiringTest = addressFromUserId
-                      (userTestF, addressTestF)(1234)
+val wiringTest =
+    addressFromUserId(userTestF, addrTestF)(1)
 
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
@@ -1092,13 +1119,13 @@ def addressFromUserId[M[_]: Monad]
           <p>More Refactoring:</p>
           <pre><code data-trim class="scala">
 val userTestF: Int => Id[User] =
-                      i => User(i, "Bob", "Smith")
-val addressTestF: User => Id[Address] =
-                      _ => Address("London")
+                 i => User(i, "Bob", "Smith")
+val addrTestF: User => Id[Address] =
+                 _ => Address("London")
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
 val wiringTest = addressFromUserId[Id]
-                      (userTestF, addressTestF)(1234)
+                     (userTestF, addrTestF)(1)
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
 assert(wiringTest...
@@ -1122,21 +1149,21 @@ address: Address = Address(London)
 	  </aside>
 	  <h2>Abstraction over monads</h2>
           <pre class="fragment"><code data-trim class="scala">
-def runLongCalc(a: Int, b: Int): Future[Int] = {
+def expFunc(a: Int, b: Int): Future[Int] = {
   Future { /* expensive calculating here */ }
 }
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
-def runLongCalc[M[_]](a: Int,b: Int)
-                     (implicit m: Monad[M]):M[Int] = {
+def expFunc[M[_]](a: Int,b: Int)
+           (implicit m: Monad[M]):M[Int] = {
   m.point { /* expensive calculating here */ }
 }
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
-scala> runLongCalc[Future](10, 5)
+scala> expFunc[Future](10, 5)
 res35: scala.concurrent.Future[Int] = ...
 
-scala> runLongCalc[Id](10, 5)
+scala> expFunc[Id](10, 5)
 res34: scalaz.Scalaz.Id[Int] = ...
           </code></pre>
         </section>
