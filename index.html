@@ -228,7 +228,7 @@ res12: Option[Int] = Some(3)
 > case class Money(ccy: String, amount: Int)
 defined class Money
 
-scala> Money("EUR", 3).some
+> Money("EUR", 3).some
 res3: Option[Money] = Some(Money(EUR, 3))
           </code></pre>
         </section>
@@ -367,11 +367,11 @@ res5: List[Int] = List(1, 2, 3)
 	  <h2>Typeclasses</h2>
 	  <h5>A simple example</h5>
           <pre class="fragment"><code data-trim class="scala">
-// as before
+// implementation as before
 implicit object intOrd extends Ord[Int] ...
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
-// as before
+// implementation as before
 def sort[T](xs: List[T])
            (implicit ord: Ord[T]):List[T]
           </code></pre>
@@ -1125,10 +1125,10 @@ val addrTestF: User => Id[Address] =
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
 val wiringTest = addressFromUserId[Id]
-                     (userTestF, addrTestF)(1)
+                    (userTestF, addrTestF)(1)
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
-assert(wiringTest...
+assert(wiringTest, ...
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
 scala> :type wiringTest
