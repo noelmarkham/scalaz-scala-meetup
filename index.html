@@ -137,11 +137,13 @@ res2: Option[String] = Some(corrie)
 scala> val i = "6".parseInt
 i: Validation[
      NumberFormatException,Int] = Success(6)
-
+          </code></pre>
+          <pre class="fragment"><code data-trim class="scala">
 scala> val b = "corrie".parseBoolean
 b: Validation[
-     IllegalArgumentException,Boolean] =
- Failure(java.lang.IllegalArgumentException:
+     IllegalArgumentException,
+     Boolean] =
+ Failure(IllegalArgumentException:
                  For input string: "corrie")
           </code></pre>
         </section>
@@ -327,20 +329,20 @@ res31: scalaz.\/[Nothing,Int] = \/-(10)
 	  <h5>A simple example</h5>
           <pre class="fragment"><code data-trim class="scala">
 trait Ord[T] {
- def compare(a: T, b: T): Boolean
+ def compare(a: T, b: T):Boolean
 }
           </code></pre>
             <p class="fragment">An <code>Ord</code> instance <i class="fragment">for a specific type:</i></p>
             <pre class="fragment"><code data-trim class="scala">
 object intOrd extends Ord[Int] {
- def compare(a: Int, b: Int): Boolean = a <= b
+ def compare(a: Int, b: Int):Boolean = a <= b
 }
           </code></pre>
           </section>
           <section>
             <aside class="notes">
               <ul>
-                <li>Last element: XXXX</li>
+                <li>Last element: sorted with intOrd parameter</li>
                 <li>Next slide: Make the ordering implicit</li>
               </ul>
             </aside>
@@ -709,12 +711,12 @@ Integer.min(a, Integer.MAX_VALUE) === a
           <h5>Monoid</h5>
 	  <p class="fragment"><code>foldMap</code></p>
           <pre class="fragment"><code data-trim class="scala">
-> List(10, 9, 8).foldMap(i => i)
+scala> List(10, 9, 8).foldMap(i => i)
 res20: Int = 27
           </code></pre>
           <pre class="fragment"><code data-trim class="scala">
-> List("A", "BB").foldMap(s => List(s.length))
-res22: List[Int] = List(1, 2)
+scala> List("A", "BB").foldMap(_.length)
+res22: Int = 3
           </code></pre>
         </section>
 
